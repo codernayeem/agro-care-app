@@ -1,4 +1,4 @@
-package com.example.agro_care_app
+package com.nayeem.agro.care
 
 import io.flutter.embedding.android.FlutterActivity
 
