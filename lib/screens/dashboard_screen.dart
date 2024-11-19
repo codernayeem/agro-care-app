@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-  final String title;
+class DashBoardScreen extends StatefulWidget {
+  const DashBoardScreen({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<DashBoardScreen> createState() => _DashBoardScreenState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _DashBoardScreenState extends State<DashBoardScreen> {
   int _counter = 0;
 
   void _incrementCounter() {
@@ -22,7 +21,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
+        title: Text("Hello"),
       ),
       body: Center(
         child: Column(

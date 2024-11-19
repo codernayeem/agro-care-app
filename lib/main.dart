@@ -1,10 +1,17 @@
 import 'package:agro_care_app/firebase_options.dart';
+import 'package:agro_care_app/providers/auth_provider.dart';
+import 'package:agro_care_app/screens/auth_screen.dart';
 import 'package:agro_care_app/screens/dashboard_screen.dart';
+import 'package:agro_care_app/screens/intro_screen.dart';
+import 'package:agro_care_app/screens/splash_screen.dart';
+import 'package:agro_care_app/theme/app_theme.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,22 +25,49 @@ void main() async {
   runApp(const MyApp());
 }
 
+final GoRouter _router = GoRouter(
+  initialLocation: '/intro',
+  routes: [
+    GoRoute(
+      path: '/',
+      builder: (context, state) => const SplashScreen(),
+    ),
+    GoRoute(
+      path: '/intro',
+      builder: (context, state) => IntroScreen(),
+    ),
+    GoRoute(
+      path: '/auth/:mode',
+      builder: (context, state) =>
+          AuthScreen(mode: state.pathParameters['mode'] ?? 'login'),
+    ),
+    GoRoute(
+      path: '/dashboard',
+      builder: (context, state) => DashBoardScreen(),
+    ),
+  ],
+);
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  static FirebaseAnalytics analytics = FirebaseAnalytics.instance;
-  static FirebaseAnalyticsObserver observer =
-      FirebaseAnalyticsObserver(analytics: analytics);
+  // static FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+  // static FirebaseAnalyticsObserver observer =
+  //     FirebaseAnalyticsObserver(analytics: analytics);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<AuthProvider>(
+            create: (context) => AuthProvider()),
+      ],
+      child: MaterialApp.router(
+        title: 'Agro Care',
+        theme: AppTheme.lightTheme,
+        routerConfig: _router,
+        debugShowCheckedModeBanner: false,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
