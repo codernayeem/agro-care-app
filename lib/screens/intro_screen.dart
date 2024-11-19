@@ -1,6 +1,8 @@
+import 'package:agro_care_app/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class IntroScreen extends StatelessWidget {
   IntroScreen({super.key});
@@ -23,47 +25,84 @@ class IntroScreen extends StatelessWidget {
     },
   ];
 
+  final PageController _pageController = PageController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          // Feature Slider
-          PageView.builder(
-            itemCount: featureSlides.length,
-            itemBuilder: (context, index) {
-              final slide = featureSlides[index];
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  LottieBuilder.asset(slide["image"]!, width: 200),
-                  const SizedBox(height: 30),
-                  Text(
-                    slide["title"]!,
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.green[800],
-                    ),
+      body: SafeArea(
+        child: Column(
+          children: [
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  "assets/icon_128.png",
+                  width: 40,
+                ),
+                const SizedBox(width: 10),
+                Material(
+                  type: MaterialType.transparency,
+                  child: Text(
+                    'Agro Care',
+                    style: Theme.of(context).textTheme.displayLarge,
                   ),
-                  const SizedBox(height: 10),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                    child: Text(
-                      slide["description"]!,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 16, color: Colors.grey[700]),
-                    ),
-                  ),
-                ],
-              );
-            },
-          ),
+                ),
+              ],
+            ),
+            // Feature Slider
+            Expanded(
+              child: PageView.builder(
+                itemCount: featureSlides.length,
+                controller: _pageController,
+                itemBuilder: (context, index) {
+                  final slide = featureSlides[index];
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      LottieBuilder.asset(slide["image"]!, width: 200),
+                      const SizedBox(height: 30),
+                      Text(
+                        slide["title"]!,
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green[800],
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: Text(
+                          slide["description"]!,
+                          textAlign: TextAlign.center,
+                          style:
+                              TextStyle(fontSize: 16, color: Colors.grey[700]),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
 
-          // Bottom Section
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
+            SmoothPageIndicator(
+              controller: _pageController,
+              count: featureSlides.length,
+              effect: const ExpandingDotsEffect(
+                dotColor: Colors.grey,
+                activeDotColor: AppColors.primaryColor,
+                dotHeight: 10,
+                dotWidth: 10,
+                spacing: 10,
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            // Bottom Section
+            Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -100,8 +139,8 @@ class IntroScreen extends StatelessWidget {
                 ],
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
