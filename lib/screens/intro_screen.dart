@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:agro_care_app/theme/colors.dart';
+import 'package:agro_care_app/widgets/buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
@@ -196,22 +197,9 @@ class _IntroScreenState extends State<IntroScreen> {
                   const SizedBox(height: 16),
                   authRow(context),
                   const SizedBox(height: 10),
-                  ElevatedButton(
-                    onPressed: () {
-                      context.go('/dashboard');
-                    },
-                    style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      minimumSize: const Size.fromHeight(50), // Full width
-                    ),
-                    child: const Text(
-                      "Continue to App",
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  ),
+                  MyButtons.filledButton2("Continue to App", () {
+                    context.go('/dashboard');
+                  }, color: Colors.grey.shade700),
                   const SizedBox(height: 10),
                 ],
               ),
@@ -225,35 +213,9 @@ class _IntroScreenState extends State<IntroScreen> {
   Widget authRow(BuildContext context) {
     return Column(
       children: [
-        FilledButton.tonal(
-          onPressed: () {
-            context.push('/auth/signup');
-          },
-          style: ElevatedButton.styleFrom(
-            primary: Colors.green,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-          ),
-          child: const Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "Create an account",
-                style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.white,
-                    fontFamily: "SanFranciscoLight",
-                    letterSpacing: 1.2,
-                    fontWeight: FontWeight.w600),
-              ),
-              SizedBox(width: 10),
-              Icon(Icons.arrow_forward, color: Colors.white),
-            ],
-          ),
-        ),
+        MyButtons.filledButton1("Create an account", () {
+          context.push('/auth/signup');
+        }, icon: Icons.arrow_forward),
         const SizedBox(height: 10),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,

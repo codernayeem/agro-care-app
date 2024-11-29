@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class DashBoardScreen extends StatefulWidget {
   const DashBoardScreen({super.key});
@@ -11,9 +13,13 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   int _counter = 0;
 
   void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    _auth.signOut();
+    context.go('/auth/login');
+
+    // setState(() {
+    //   _counter++;
+    // });
   }
 
   @override

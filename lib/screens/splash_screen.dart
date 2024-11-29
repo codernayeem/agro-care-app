@@ -15,7 +15,7 @@ class _SplashScreenState extends State<SplashScreen> {
   // Function to start after 900 milliseconds
   void startChecking() async {
     Future.delayed(const Duration(milliseconds: 900)).then((value) async {
-      context.read<AuthProvider>().initialize();
+      // context.read<AuthProvider>().initialize();
 
       if (await checkFirstTime()) {
         context.go('/intro');
@@ -77,7 +77,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 20,
-                    fontFamily: 'Hind Siliguri',
+                    fontFamily: 'Jolchobi',
                     fontWeight: FontWeight.w700,
                   ),
                 ),

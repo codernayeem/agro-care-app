@@ -57,17 +57,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider<AuthProvider>(
-            create: (context) => AuthProvider()),
-      ],
-      child: MaterialApp.router(
-        title: 'Agro Care',
-        theme: AppTheme.lightTheme,
-        routerConfig: _router,
-        debugShowCheckedModeBanner: false,
-      ),
+    return MaterialApp.router(
+      title: 'Agro Care',
+      theme: AppTheme.lightTheme,
+      routerConfig: _router,
+      debugShowCheckedModeBanner: false,
     );
   }
 }
