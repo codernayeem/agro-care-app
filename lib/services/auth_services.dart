@@ -1,12 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:flutter/material.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   Future<bool> handleGoogleSignIn() async {
+    await _googleSignIn.signOut();
     try {
       // Trigger the Google Sign In process
       final GoogleSignInAccount? googleSignInAccount =
@@ -36,18 +36,5 @@ class AuthService {
     } catch (e) {
       print(e);
     }
-  }
-
-  void showSnackBar(BuildContext context, String msg) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(msg),
-      duration: const Duration(seconds: 2),
-      action: SnackBarAction(
-        label: 'Close',
-        onPressed: () {
-          ScaffoldMessenger.of(context).hideCurrentSnackBar();
-        },
-      ),
-    ));
   }
 }

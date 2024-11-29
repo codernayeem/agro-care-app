@@ -104,6 +104,51 @@ class _AuthScreenState extends State<AuthScreen> {
     }
   }
 
+  void onForgotPassword() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        TextEditingController emailController = TextEditingController();
+        return AlertDialog(
+          title: const Text('Forgot Password'),
+          backgroundColor: Colors.white,
+          surfaceTintColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4),
+          ),
+          content: SizedBox(
+            width: double.infinity,
+            height: 100,
+            child: TextFieldWithLabel(
+                controller: emailController,
+                hint: "abcd@gmail.com",
+                label: 'Email',
+                icon: Icons.email_outlined),
+          ),
+          actions: <Widget>[
+            OutlinedButton(
+              child: const Text('Send Reset Link'),
+              onPressed: () async {
+                String email = emailController.text.trim();
+                if (email.isEmpty) {
+                  showSnackBar("Email can't be empty");
+                  return;
+                }
+                try {
+                  await _auth.sendPasswordResetEmail(email: email);
+                  Navigator.of(context).pop();
+                  showSnackBar("Password reset link sent to $email");
+                } catch (e) {
+                  showSnackBar(e.toString());
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     PageController pageController =
@@ -157,7 +202,7 @@ class _AuthScreenState extends State<AuthScreen> {
             Align(
               alignment: Alignment.centerRight,
               child: GestureDetector(
-                onTap: () {},
+                onTap: onForgotPassword,
                 child: Text(
                   'Forgot Password?',
                   style: TextStyle(
@@ -256,7 +301,19 @@ class _AuthScreenState extends State<AuthScreen> {
               emailSignUp,
               loading: loading,
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 20),
+            const Divider(),
+            const SizedBox(height: 16),
+            MyButtons.filledButton2(
+              'Continue with Google',
+              () async {
+                if (await _authService.handleGoogleSignIn()) {
+                  afterScuccess();
+                }
+              },
+              icon: SvgPicture.asset('assets/svg/google.svg', width: 24),
+            ),
+            const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
