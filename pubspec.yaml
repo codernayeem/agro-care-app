@@ -39,3 +39,26 @@ flutter:
   assets:
     - assets/
     - assets/anim/
+
+  fonts:
+    - family: SanFrancisco
+      fonts:
+        - asset: fonts/SFUIDisplay-Regular.otf
+    - family: SanFranciscoLight
+      fonts:
+        - asset: fonts/SFUIDisplay-Light.ttf
+    - family: SanFranciscoBold
+      fonts:
+        - asset: fonts/SFUIDisplay-Bold.ttf
+    - family: Jolchobi
+      fonts:
+        - asset: fonts/Jolchobi.ttf
+    - family: NotoSansBengali
+      fonts:
+        - asset: fonts/NotoSansBengali-Regular.ttf
+    - family: OpenSans
+      fonts:
+        - asset: fonts/OpenSans-Regular.ttf
+    - family: Roboto
+      fonts:
+        - asset: fonts/Roboto-Regular.ttf

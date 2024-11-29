@@ -8,6 +8,9 @@ class AppTheme {
       brightness: Brightness.light,
       scaffoldBackgroundColor: AppColors.background,
       colorScheme: ColorScheme.fromSeed(seedColor: AppColors.seedColor),
+      visualDensity: VisualDensity.adaptivePlatformDensity,
+      fontFamily: "SanFrancisco",
+      fontFamilyFallback: const ['SanFrancisco'],
       useMaterial3: true,
       textTheme: const TextTheme(
         displayLarge: AppTextStyles.heading,
