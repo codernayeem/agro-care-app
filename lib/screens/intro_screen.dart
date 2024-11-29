@@ -1,12 +1,19 @@
+import 'dart:async';
+
 import 'package:agro_care_app/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-class IntroScreen extends StatelessWidget {
-  IntroScreen({super.key});
+class IntroScreen extends StatefulWidget {
+  const IntroScreen({super.key});
 
+  @override
+  State<IntroScreen> createState() => _IntroScreenState();
+}
+
+class _IntroScreenState extends State<IntroScreen> {
   final List<Map<String, String>> featureSlides = [
     {
       "title": "Scan Leaves for Diseases",
@@ -24,8 +31,53 @@ class IntroScreen extends StatelessWidget {
       "image": "assets/anim/gardening.json",
     },
   ];
+  late PageController _pageController;
+  Timer? _timer;
+  int _currentPage = 0;
 
-  final PageController _pageController = PageController();
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(initialPage: _currentPage);
+
+    _startAutoScroll();
+
+    // Listen for manual page changes
+    _pageController.addListener(() {
+      final newPage = _pageController.page?.round();
+      if (newPage != null && newPage != _currentPage) {
+        _currentPage = newPage;
+        _resetAutoScroll();
+      }
+    });
+  }
+
+  /// Starts the auto-scroll timer
+  void _startAutoScroll() {
+    _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
+      if (_pageController.hasClients) {
+        _currentPage = (_currentPage + 1) % featureSlides.length;
+        _pageController.animateToPage(
+          _currentPage,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
+  }
+
+  /// Resets the auto-scroll timer
+  void _resetAutoScroll() {
+    _timer?.cancel();
+    _startAutoScroll();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _pageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,21 +89,45 @@ class IntroScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                Material(
+                  type: MaterialType.transparency,
+                  child: Text(
+                    'Agro',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.green[900],
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 4),
                 Image.asset(
                   "assets/icon_128.png",
                   width: 40,
                 ),
-                const SizedBox(width: 10),
+                const SizedBox(width: 4),
                 Material(
                   type: MaterialType.transparency,
                   child: Text(
-                    'Agro Care',
-                    style: Theme.of(context).textTheme.displayLarge,
+                    'Care',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.green[900],
+                    ),
                   ),
                 ),
               ],
             ),
-            // Feature Slider
+            const SizedBox(height: 4),
+            Text(
+              "Make your farming experience better",
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.grey[700],
+              ),
+            ),
+            const SizedBox(height: 10),
             Expanded(
               child: PageView.builder(
                 itemCount: featureSlides.length,
@@ -99,7 +175,7 @@ class IntroScreen extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 30),
 
             // Bottom Section
             Container(
@@ -117,8 +193,9 @@ class IntroScreen extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  const SizedBox(height: 16),
                   authRow(context),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 10),
                   ElevatedButton(
                     onPressed: () {
                       context.go('/dashboard');
@@ -146,27 +223,62 @@ class IntroScreen extends StatelessWidget {
   }
 
   Widget authRow(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+    return Column(
       children: [
-        TextButton(
-          onPressed: () {
-            context.push('/auth/login');
-          },
-          child: const Text(
-            "Login",
-            style: TextStyle(fontSize: 16, color: Colors.green),
-          ),
-        ),
-        const Text("|", style: TextStyle(fontSize: 16)),
-        TextButton(
+        FilledButton.tonal(
           onPressed: () {
             context.push('/auth/signup');
           },
-          child: const Text(
-            "Sign Up",
-            style: TextStyle(fontSize: 16, color: Colors.green),
+          style: ElevatedButton.styleFrom(
+            primary: Colors.green,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
           ),
+          child: const Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Create an account",
+                style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white,
+                    fontFamily: "SanFranciscoLight",
+                    letterSpacing: 1.2,
+                    fontWeight: FontWeight.w600),
+              ),
+              SizedBox(width: 10),
+              Icon(Icons.arrow_forward, color: Colors.white),
+            ],
+          ),
+        ),
+        const SizedBox(height: 10),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const SizedBox(width: 10),
+            Text("Already have an account?",
+                style: TextStyle(fontSize: 16, color: Colors.grey[700])),
+            const SizedBox(width: 10),
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                color: Colors.green[50],
+              ),
+              padding: EdgeInsets.zero,
+              child: TextButton(
+                onPressed: () {
+                  context.push('/auth/login');
+                },
+                child: Text(
+                  "Login",
+                  style: TextStyle(fontSize: 16, color: Colors.green[800]),
+                ),
+              ),
+            ),
+          ],
         ),
       ],
     );
