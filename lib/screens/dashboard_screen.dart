@@ -1,3 +1,4 @@
+import 'package:agro_care_app/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -86,30 +87,66 @@ class _DashBoardScreenState extends State<DashBoardScreen>
         bottomNavigationBar: BottomNavigationBar(
           items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(
-              icon: Image.asset(
-                "assets/icons/home.png",
-                width: 24,
+              icon: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                transitionBuilder: (Widget child, Animation<double> animation) {
+                  return FadeTransition(opacity: animation, child: child);
+                },
+                child: Image.asset(
+                  "assets/icons/home.png",
+                  key: ValueKey<int>(selectedPage),
+                  width: 24,
+                  color:
+                      selectedPage == 0 ? AppColors.darkGreen : Colors.black87,
+                ),
               ),
               label: 'Home',
             ),
             BottomNavigationBarItem(
-              icon: Image.asset(
-                "assets/icons/cart.png",
-                width: 24,
+              icon: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                transitionBuilder: (Widget child, Animation<double> animation) {
+                  return FadeTransition(opacity: animation, child: child);
+                },
+                child: Image.asset(
+                  "assets/icons/cart.png",
+                  key: ValueKey<int>(selectedPage == 1 ? 1 : 0),
+                  width: 24,
+                  color:
+                      selectedPage == 1 ? AppColors.darkGreen : Colors.black87,
+                ),
               ),
               label: 'Market',
             ),
             BottomNavigationBarItem(
-              icon: Image.asset(
-                "assets/icons/explore.png",
-                width: 24,
+              icon: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                transitionBuilder: (Widget child, Animation<double> animation) {
+                  return FadeTransition(opacity: animation, child: child);
+                },
+                child: Image.asset(
+                  "assets/icons/explore.png",
+                  key: ValueKey<int>(selectedPage == 2 ? 2 : 0),
+                  width: 24,
+                  color:
+                      selectedPage == 2 ? AppColors.darkGreen : Colors.black87,
+                ),
               ),
               label: 'Community',
             ),
             BottomNavigationBarItem(
-              icon: Image.asset(
-                "assets/icons/profile.png",
-                width: 24,
+              icon: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                transitionBuilder: (Widget child, Animation<double> animation) {
+                  return FadeTransition(opacity: animation, child: child);
+                },
+                child: Image.asset(
+                  "assets/icons/profile.png",
+                  key: ValueKey<int>(selectedPage == 3 ? 3 : 0),
+                  width: 24,
+                  color:
+                      selectedPage == 3 ? AppColors.darkGreen : Colors.black87,
+                ),
               ),
               label: 'Profile',
             )
