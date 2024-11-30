@@ -1,4 +1,5 @@
 import 'package:agro_care_app/firebase_options.dart';
+import 'package:agro_care_app/providers/active_nav_provider.dart';
 import 'package:agro_care_app/providers/auth_provider.dart';
 import 'package:agro_care_app/screens/auth_screen.dart';
 import 'package:agro_care_app/screens/dashboard_screen.dart';
@@ -25,8 +26,13 @@ void main() async {
   runApp(const MyApp());
 }
 
+FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+FirebaseAnalyticsObserver observer =
+    FirebaseAnalyticsObserver(analytics: analytics);
+
 final GoRouter _router = GoRouter(
-  initialLocation: '/intro',
+  observers: [observer],
+  initialLocation: '/',
   routes: [
     GoRoute(
       path: '/',
@@ -51,17 +57,19 @@ final GoRouter _router = GoRouter(
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // static FirebaseAnalytics analytics = FirebaseAnalytics.instance;
-  // static FirebaseAnalyticsObserver observer =
-  //     FirebaseAnalyticsObserver(analytics: analytics);
-
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      title: 'Agro Care',
-      theme: AppTheme.lightTheme,
-      routerConfig: _router,
-      debugShowCheckedModeBanner: false,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<ActiveNavProvider>(
+            create: (context) => ActiveNavProvider()),
+      ],
+      child: MaterialApp.router(
+        title: 'Agro Care',
+        theme: AppTheme.lightTheme,
+        routerConfig: _router,
+        debugShowCheckedModeBanner: false,
+      ),
     );
   }
 }

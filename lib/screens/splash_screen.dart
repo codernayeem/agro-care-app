@@ -1,8 +1,6 @@
-import 'package:agro_care_app/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:provider/provider.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -15,8 +13,6 @@ class _SplashScreenState extends State<SplashScreen> {
   // Function to start after 900 milliseconds
   void startChecking() async {
     Future.delayed(const Duration(milliseconds: 900)).then((value) async {
-      // context.read<AuthProvider>().initialize();
-
       if (await checkFirstTime()) {
         context.go('/intro');
       } else {

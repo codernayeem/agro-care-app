@@ -11,4 +11,12 @@ class AppColors {
   static const surface = Colors.white;
   static const text = Color(0xFF212121); // Dark text
   static const caption = Color(0xFF757575); // Subtle gray text
+
+  // white, gray, black, dark green
+  static const white = Colors.white;
+  static const gray = Color(0xFF9E9E9E);
+  static const grayLight = Color(0xFFE0E0E0);
+  static const grayDark = Color(0xFF616161);
+  static const black = Colors.black;
+  static const darkGreen = Color(0xFF2E7D32);
 }
