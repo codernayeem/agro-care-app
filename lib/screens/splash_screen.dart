@@ -1,5 +1,7 @@
+import 'package:agro_care_app/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -11,6 +13,9 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   void startChecking() async {
+    MyAuthProvider authProvider = context.read();
+    authProvider.initialize();
+
     Future.delayed(const Duration(milliseconds: 1000)).then((value) async {
       if (await checkFirstTime()) {
         context.go('/intro');

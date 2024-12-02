@@ -1,47 +1,33 @@
-// import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 
-// import '../services/auth_services.dart';
+class MyAuthProvider with ChangeNotifier {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
-// class AuthProvider with ChangeNotifier {
-//   final AuthService _authService = AuthService();
-//   bool isAuthenticated = false;
-//   String? userId;
+  bool isAuthenticated = false;
+  String? userId;
+  String userName = "";
+  String userEmail = "";
+  String userPhotoUrl = "";
 
-//   void initialize() {
-//     isAuthenticated = _authService.auth.currentUser != null;
-//     userId = _authService.auth.currentUser?.uid;
+  void initialize() {
+    setUserDetails();
 
-//     notifyListeners();
-//   }
+    _auth.authStateChanges().listen((User? user) {
+      setUserDetails();
+      notifyListeners();
+    });
+  }
 
-//   Future<void> login(String email, String password) async {
-//     try {
-//       User? user =
-//           await _authService.signInWithEmailAndPassword(email, password);
-//       isAuthenticated = true;
-//       notifyListeners();
-//     } catch (error) {
-//       isAuthenticated = false;
-//       throw error;
-//     }
-//   }
-
-//   Future<void> signup(String email, String password) async {
-//     try {
-//       // _userId = await _authService.signup(email, password);
-//       isAuthenticated = true;
-//       notifyListeners();
-//     } catch (error) {
-//       isAuthenticated = false;
-//       throw error;
-//     }
-//   }
-
-//   Future<void> signOut() async {
-//     await _authService.signOut();
-//     isAuthenticated = false;
-//     userId = null;
-//     notifyListeners();
-//   }
-// }
+  void setUserDetails() {
+    if (_auth.currentUser == null) {
+      isAuthenticated = false;
+      return;
+    }
+    var user = _auth.currentUser!;
+    userName = user.displayName ?? "";
+    userEmail = user.email ?? "";
+    userPhotoUrl = user.photoURL ?? "";
+    isAuthenticated = true;
+  }
+}

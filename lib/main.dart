@@ -12,6 +12,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import 'providers/auth_provider.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -60,6 +62,8 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider<ActiveNavProvider>(
             create: (context) => ActiveNavProvider()),
+        ChangeNotifierProvider<MyAuthProvider>(
+            create: (context) => MyAuthProvider())
       ],
       child: MaterialApp.router(
         title: 'Agro Care',

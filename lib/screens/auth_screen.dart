@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 
+import '../model/status_model.dart';
 import '../widgets/buttons.dart';
 
 class AuthScreen extends StatefulWidget {
@@ -57,16 +58,11 @@ class _AuthScreenState extends State<AuthScreen> {
       loading = true;
     });
 
-    try {
-      UserCredential userCredential =
-          await _auth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      await userCredential.user?.updateDisplayName(name);
+    Status status = await _authService.emailSignUp(email, password, name);
+    if (status.success) {
       afterScuccess();
-    } catch (e) {
-      showSnackBar(e.toString());
+    } else {
+      showSnackBar(status.message);
       setState(() {
         loading = false;
       });
@@ -90,14 +86,11 @@ class _AuthScreenState extends State<AuthScreen> {
       loading = true;
     });
 
-    try {
-      await _auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+    Status status = await _authService.emailSignIn(email, password);
+    if (status.success) {
       afterScuccess();
-    } catch (e) {
-      showSnackBar(e.toString());
+    } else {
+      showSnackBar(status.message);
       setState(() {
         loading = false;
       });
@@ -218,7 +211,7 @@ class _AuthScreenState extends State<AuthScreen> {
             MyButtons.filledButton2(
               'Continue with Google',
               () async {
-                if (await _authService.handleGoogleSignIn()) {
+                if ((await _authService.handleGoogleSignIn()).success) {
                   afterScuccess();
                 }
               },
@@ -307,7 +300,7 @@ class _AuthScreenState extends State<AuthScreen> {
             MyButtons.filledButton2(
               'Continue with Google',
               () async {
-                if (await _authService.handleGoogleSignIn()) {
+                if ((await _authService.handleGoogleSignIn()).success) {
                   afterScuccess();
                 }
               },
