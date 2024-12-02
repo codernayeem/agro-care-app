@@ -1,6 +1,5 @@
 import 'package:agro_care_app/firebase_options.dart';
 import 'package:agro_care_app/providers/active_nav_provider.dart';
-import 'package:agro_care_app/providers/auth_provider.dart';
 import 'package:agro_care_app/screens/auth_screen.dart';
 import 'package:agro_care_app/screens/dashboard_screen.dart';
 import 'package:agro_care_app/screens/intro_screen.dart';
@@ -11,7 +10,6 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -22,7 +20,6 @@ void main() async {
   FirebaseFirestore.instance.settings = const Settings(
     persistenceEnabled: true,
   );
-  await Hive.initFlutter();
   runApp(const MyApp());
 }
 
@@ -40,7 +37,7 @@ final GoRouter _router = GoRouter(
     ),
     GoRoute(
       path: '/intro',
-      builder: (context, state) => IntroScreen(),
+      builder: (context, state) => const IntroScreen(),
     ),
     GoRoute(
       path: '/auth/:mode',
@@ -49,7 +46,7 @@ final GoRouter _router = GoRouter(
     ),
     GoRoute(
       path: '/dashboard',
-      builder: (context, state) => DashBoardScreen(),
+      builder: (context, state) => const DashBoardScreen(),
     ),
   ],
 );
