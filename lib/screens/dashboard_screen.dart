@@ -25,7 +25,7 @@ class _DashBoardScreenState extends State<DashBoardScreen>
     const HomeScreen(key: ValueKey("HomePage")),
     const MarketScreen(key: ValueKey("MarketPage")),
     const CommunityScreen(key: ValueKey("CommunityPage")),
-    const ProfileScreen(key: ValueKey("ProfilePage")),
+    ProfileScreen(key: const ValueKey("ProfilePage")),
   ];
 
   void activeNavListener() {
