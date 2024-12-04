@@ -1,7 +1,9 @@
 import 'package:agro_care_app/providers/auth_provider.dart';
 import 'package:agro_care_app/services/auth_services.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -11,29 +13,157 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Profile'),
-      ),
-      body: Consumer<MyAuthProvider>(
-        builder: (context, auth, child) {
-          return Center(
-            child: auth.isAuthenticated
-                ? ElevatedButton(
-                    onPressed: () async {
-                      if ((await _authService.handleSignOut()).success)
-                        context.go('/intro');
-                    },
-                    child: const Text('Logout'),
+    return SafeArea(
+      child: Scaffold(
+        body: Consumer<MyAuthProvider>(
+          builder: (context, auth, child) {
+            return auth.isAuthenticated
+                ? Column(
+                    children: [
+                      _buildProfile(auth),
+                      const SizedBox(height: 24),
+                      _buildSettings(),
+                    ],
                   )
-                : ElevatedButton(
-                    onPressed: () {
-                      context.push('/auth/login');
-                    },
-                    child: const Text('Login'),
+                : Center(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        GoRouter.of(context).go('/login');
+                      },
+                      child: const Text('Login'),
+                    ),
+                  );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProfile(auth) {
+    return Stack(
+      children: [
+        Positioned(
+          top: 0,
+          right: -45,
+          child: Lottie.asset(
+            'assets/anim/autumn_plant.json',
+            width: 180,
+          ),
+        ),
+        Column(
+          children: [
+            const SizedBox(height: 16),
+            Container(
+              width: double.infinity,
+              margin: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: Colors.green,
+                  width: 4,
+                ),
+              ),
+              child: Center(
+                child: Container(
+                  width: 100,
+                  height: 100,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: Colors.white,
+                      width: 2,
+                    ),
+                    image: DecorationImage(
+                      image: CachedNetworkImageProvider(
+                        auth.userPhotoUrl,
+                      ),
+                      fit: BoxFit.cover,
+                    ),
                   ),
-          );
-        },
+                ),
+              ),
+            ),
+            Text(
+              auth.userName,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+              auth.userEmail,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSettings() {
+    return Column(
+      children: [
+        _listTile(
+          'Edit Profile',
+          'Update your personal information',
+          () {},
+          "assets/icons/profile.png",
+        ),
+        _listTile(
+          'Address Book',
+          'Manage your saved addresses',
+          () {},
+          "assets/icons/location.png",
+        ),
+        _listTile(
+          'Change Password',
+          'Set a new password',
+          () {},
+          "assets/icons/edit.png",
+        ),
+        _listTile(
+          'Your Orders',
+          'View your order history',
+          () {},
+          "assets/icons/orders.png",
+        ),
+        _listTile(
+          'Logout',
+          'Sign out of your account',
+          () {},
+          "assets/icons/profile.png",
+        ),
+      ],
+    );
+  }
+
+  Widget _listTile(
+      String title, String subTitle, void Function() onTap, String image) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: ListTile(
+        dense: true,
+        title: Text(title),
+        subtitle: Text(subTitle),
+        onTap: onTap,
+        leading: Image.asset(
+          image,
+          width: 28,
+          color: Colors.black87,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: BorderSide(
+            color: Colors.grey.shade200,
+            width: 1,
+          ),
+        ),
+        tileColor: Colors.grey.shade300.withOpacity(0.5),
+        focusColor: Colors.grey[200],
+        hoverColor: Colors.grey[200],
       ),
     );
   }
