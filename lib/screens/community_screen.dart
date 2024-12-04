@@ -1,6 +1,8 @@
 import 'package:agro_care_app/providers/auth_provider.dart';
 import 'package:agro_care_app/services/firestore_services.dart';
 import 'package:agro_care_app/theme/colors.dart';
+import 'package:agro_care_app/widgets/coummunity_top_input.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/rendering.dart';
@@ -21,10 +23,12 @@ class _CommunityScreenState extends State<CommunityScreen> {
 
   final ref = FireStoreServices.communityRef();
   final AuthService auth = AuthService();
+  late MyAuthProvider authProvider;
 
   @override
   void initState() {
     super.initState();
+    authProvider = Provider.of<MyAuthProvider>(context, listen: false);
     _scrollController.addListener(() {
       if (_scrollController.position.userScrollDirection ==
           ScrollDirection.reverse) {
@@ -44,90 +48,150 @@ class _CommunityScreenState extends State<CommunityScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
-            height: _isHeaderVisible ? 130.0 : 0.0,
-            child: _buildHeader(),
-          ),
-          Expanded(
-            child: FirestoreListView<Map<String, dynamic>>(
-              query: ref
-                  .collection('posts')
-                  .orderBy('timestamp', descending: true),
-              controller: _scrollController,
-              emptyBuilder: (context) {
-                return const Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.post_add, size: 100, color: Colors.grey),
-                      SizedBox(height: 10),
-                      Text('No posts yet',
-                          style: TextStyle(color: Colors.grey)),
-                    ],
-                  ),
-                );
-              },
-              itemBuilder: (context, snapshot) {
-                final post = snapshot.data();
-                return _buildPostCard(post);
-              },
+    return Consumer<MyAuthProvider>(builder: (context, auth, child) {
+      return Scaffold(
+        body: Column(
+          children: [
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              height: _isHeaderVisible ? 140.0 : 0.0,
+              child: _buildHeader(),
             ),
+            Expanded(
+              child: FirestoreListView<Map<String, dynamic>>(
+                query: ref
+                    .collection('posts')
+                    .orderBy('timestamp', descending: true),
+                controller: _scrollController,
+                emptyBuilder: (context) {
+                  return const Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.post_add, size: 100, color: Colors.grey),
+                        SizedBox(height: 10),
+                        Text('No posts yet',
+                            style: TextStyle(color: Colors.grey)),
+                      ],
+                    ),
+                  );
+                },
+                itemBuilder: (context, snapshot) {
+                  final post = snapshot.data();
+                  return _buildPostCard(post);
+                },
+              ),
+            ),
+          ],
+        ),
+      );
+    });
+  }
+
+  Widget _buildHeader() {
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        color: AppColors.white,
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 10,
+            offset: Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: Colors.green,
+                    width: 1,
+                  ),
+                ),
+                child: Center(
+                  child: Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Colors.white,
+                        width: 1,
+                      ),
+                      image: DecorationImage(
+                        image: CachedNetworkImageProvider(
+                          authProvider.userPhotoUrl,
+                        ),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              const Expanded(
+                child: CommunityTopBar(),
+              ),
+            ],
+          ),
+          const Divider(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              // equal spaced tonal buttons (icon + text) for (my post, loved post, refresh)
+              topCardButton(Icons.post_add, 'My Post', () {}),
+              topCardButton(Icons.favorite, 'Loved Post', () {}),
+              topCardButton(Icons.refresh, 'Refresh', () {}),
+            ],
           ),
         ],
       ),
     );
   }
 
-  Widget _buildHeader() {
-    return Consumer<MyAuthProvider>(builder: (context, auth, child) {
-      return Container(
-        padding: const EdgeInsets.all(16),
-        color: AppColors.primaryColor,
+  Widget topCardButton(IconData icon, String text, Function() onPressed) {
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+        decoration: BoxDecoration(
+          color: Colors.grey[100],
+          borderRadius: BorderRadius.circular(4),
+        ),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Row(
-              children: [
-                CircleAvatar(
-                  backgroundImage: auth.userPhotoUrl != ""
-                      ? NetworkImage(auth.userPhotoUrl)
-                      : null,
-                  radius: 30,
-                ),
-                const SizedBox(width: 10),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      // Replace with the logged-in user's name
-                      auth.userName.isEmpty ? 'Anonymous' : auth.userName,
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-              ],
+            Container(
+              padding: const EdgeInsets.all(2),
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: Icon(
+                icon,
+                color: AppColors.darkGreen,
+              ),
             ),
-            Column(
-              children: [
-                FilledButton.tonal(
-                    onPressed: () {}, child: const Text("My Posts")),
-                const SizedBox(width: 4),
-                FilledButton.tonal(
-                    onPressed: () {}, child: const Text("Saved Posts")),
-              ],
-            )
+            const SizedBox(width: 4),
+            Text(
+              text,
+              style: const TextStyle(
+                color: Colors.black87,
+                fontSize: 13,
+              ),
+            ),
           ],
         ),
-      );
-    });
+      ),
+    );
   }
 
   Widget _buildPostCard(Map<String, dynamic> post) {
