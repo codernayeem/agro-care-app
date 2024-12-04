@@ -30,4 +30,9 @@ class MyAuthProvider with ChangeNotifier {
     userPhotoUrl = user.photoURL ?? "";
     isAuthenticated = true;
   }
+
+  void update() {
+    setUserDetails();
+    notifyListeners();
+  }
 }

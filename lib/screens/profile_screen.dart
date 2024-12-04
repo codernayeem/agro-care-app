@@ -1,15 +1,38 @@
 import 'package:agro_care_app/providers/auth_provider.dart';
+import 'package:agro_care_app/screens/auth_screen.dart';
+import 'package:agro_care_app/screens/change_password_screen.dart';
 import 'package:agro_care_app/services/auth_services.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
+
+import 'edit_profile_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   ProfileScreen({super.key});
 
   final AuthService _authService = AuthService();
+
+  void _logout(BuildContext context) async {
+    await _authService.handleSignOut();
+  }
+
+  void _editProfile(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const EditProfileScreen(),
+      ),
+    );
+  }
+
+  void _changePassword(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ChangePasswordScreen(),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,17 +45,10 @@ class ProfileScreen extends StatelessWidget {
                     children: [
                       _buildProfile(auth),
                       const SizedBox(height: 24),
-                      _buildSettings(),
+                      _buildSettings(context),
                     ],
                   )
-                : Center(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        GoRouter.of(context).go('/login');
-                      },
-                      child: const Text('Login'),
-                    ),
-                  );
+                : const AuthScreen(mode: 'login');
           },
         ),
       ),
@@ -103,13 +119,15 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSettings() {
+  Widget _buildSettings(BuildContext context) {
     return Column(
       children: [
         _listTile(
           'Edit Profile',
           'Update your personal information',
-          () {},
+          () {
+            _editProfile(context);
+          },
           "assets/icons/profile.png",
         ),
         _listTile(
@@ -121,7 +139,9 @@ class ProfileScreen extends StatelessWidget {
         _listTile(
           'Change Password',
           'Set a new password',
-          () {},
+          () {
+            _changePassword(context);
+          },
           "assets/icons/edit.png",
         ),
         _listTile(
@@ -133,15 +153,23 @@ class ProfileScreen extends StatelessWidget {
         _listTile(
           'Logout',
           'Sign out of your account',
-          () {},
-          "assets/icons/profile.png",
+          () {
+            _logout(context);
+          },
+          "assets/icons/logout.png",
+          color: const Color.fromARGB(255, 114, 26, 34),
         ),
       ],
     );
   }
 
   Widget _listTile(
-      String title, String subTitle, void Function() onTap, String image) {
+    String title,
+    String subTitle,
+    void Function() onTap,
+    String image, {
+    Color? color,
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: ListTile(
@@ -152,7 +180,7 @@ class ProfileScreen extends StatelessWidget {
         leading: Image.asset(
           image,
           width: 28,
-          color: Colors.black87,
+          color: color ?? Colors.black87,
         ),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
