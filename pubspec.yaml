@@ -31,6 +31,7 @@ dependencies:
   firebase_ui_firestore: ^1.6.3
   shared_preferences: ^2.2.3
   image_picker: ^1.0.8
+  timeago: ^3.7.0
   
   
 dev_dependencies:
