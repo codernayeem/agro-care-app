@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../screens/create_post_page.dart';
+import '../screens/community/create_post_page.dart';
 
 class CommunityTopBar extends StatefulWidget {
   const CommunityTopBar({super.key});

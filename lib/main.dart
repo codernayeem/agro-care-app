@@ -1,6 +1,5 @@
 import 'package:agro_care_app/firebase_options.dart';
 import 'package:agro_care_app/providers/active_nav_provider.dart';
-import 'package:agro_care_app/screens/auth_screen.dart';
 import 'package:agro_care_app/screens/dashboard_screen.dart';
 import 'package:agro_care_app/screens/intro_screen.dart';
 import 'package:agro_care_app/screens/splash_screen.dart';
@@ -13,6 +12,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import 'providers/auth_provider.dart';
+import 'screens/profile/auth_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

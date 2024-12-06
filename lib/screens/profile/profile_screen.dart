@@ -1,12 +1,12 @@
 import 'package:agro_care_app/providers/auth_provider.dart';
-import 'package:agro_care_app/screens/auth_screen.dart';
-import 'package:agro_care_app/screens/change_password_screen.dart';
 import 'package:agro_care_app/services/auth_services.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
+import 'auth_screen.dart';
+import 'change_password_screen.dart';
 import 'edit_profile_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -29,7 +29,7 @@ class ProfileScreen extends StatelessWidget {
   void _changePassword(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => ChangePasswordScreen(),
+        builder: (context) => const ChangePasswordScreen(),
       ),
     );
   }

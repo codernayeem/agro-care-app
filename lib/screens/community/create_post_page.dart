@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 
 import 'package:image_picker/image_picker.dart';
 
-import '../helpers/snackbar_show.dart';
+import '../../helpers/snackbar_show.dart';
 
 class CreatePostPage extends StatefulWidget {
   const CreatePostPage({super.key});

@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/active_nav_provider.dart';
-import 'home_screen.dart';
-import 'market_screen.dart';
-import 'community_screen.dart';
-import 'profile_screen.dart';
+import 'community/community_screen.dart';
+import 'home/home_screen.dart';
+import 'market/market_screen.dart';
+import 'profile/profile_screen.dart';
 
 class DashBoardScreen extends StatefulWidget {
   const DashBoardScreen({super.key});

@@ -1,6 +1,7 @@
 import 'package:agro_care_app/model/product_model.dart';
 import 'package:agro_care_app/services/firestore_services.dart';
 import 'package:agro_care_app/theme/colors.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -33,7 +34,7 @@ class MarketScreen extends StatelessWidget {
             return GridView.builder(
               padding: const EdgeInsets.all(8),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
+                crossAxisCount: 3,
                 childAspectRatio: 0.8,
                 crossAxisSpacing: 8,
                 mainAxisSpacing: 8,
@@ -110,10 +111,14 @@ class MiniProductCard extends StatelessWidget {
                             borderRadius: const BorderRadius.vertical(
                                 top: Radius.circular(6),
                                 bottom: Radius.circular(6)),
-                            child: FadeInImage.assetNetwork(
-                              placeholder: 'assets/icon.png',
-                              image: product.imageUrl,
+                            child: CachedNetworkImage(
+                              placeholder: (context, url) => const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                              imageUrl: product.imageUrl,
                               fit: BoxFit.contain,
+                              errorWidget: (context, url, error) =>
+                                  const Icon(Icons.error),
                             ))),
                   ),
                   Padding(

@@ -1,6 +1,5 @@
 import 'package:agro_care_app/model/post_model.dart';
 import 'package:agro_care_app/providers/auth_provider.dart';
-import 'package:agro_care_app/screens/my_post_screen.dart';
 import 'package:agro_care_app/services/firestore_services.dart';
 import 'package:agro_care_app/theme/colors.dart';
 import 'package:agro_care_app/widgets/coummunity_top_input.dart';
@@ -9,9 +8,10 @@ import 'package:flutter/material.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:provider/provider.dart';
 
-import '../services/auth_services.dart';
-import '../widgets/post_card.dart';
+import '../../services/auth_services.dart';
+import '../../widgets/post_card.dart';
 import 'liked_post_screen.dart';
+import 'my_post_screen.dart';
 
 class CommunityScreen extends StatefulWidget {
   const CommunityScreen({super.key});

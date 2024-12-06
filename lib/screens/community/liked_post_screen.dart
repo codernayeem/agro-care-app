@@ -3,9 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 
-import '../model/post_model.dart';
-import '../services/firestore_services.dart';
-import '../widgets/post_card.dart';
+import '../../model/post_model.dart';
+import '../../services/firestore_services.dart';
+import '../../widgets/post_card.dart';
 
 class LikedPostsScreen extends StatefulWidget {
   const LikedPostsScreen({super.key});

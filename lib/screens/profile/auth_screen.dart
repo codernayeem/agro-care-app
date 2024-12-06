@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 
-import '../model/status_model.dart';
-import '../widgets/buttons.dart';
+import '../../model/status_model.dart';
+import '../../widgets/buttons.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key, required this.mode});
