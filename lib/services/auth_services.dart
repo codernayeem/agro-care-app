@@ -1,11 +1,10 @@
+import 'package:agro_care_app/services/firestore_services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import '../model/status_model.dart';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:path/path.dart' as path;
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -32,6 +31,11 @@ class AuthService {
         password: password,
       );
       await userCredential.user?.updateDisplayName(name);
+      FireStoreServices.publicUserData(_auth.currentUser!.uid).set({
+        "email": email,
+        "name": name,
+        "photoUrl": _auth.currentUser!.photoURL,
+      });
       return Status.success();
     } catch (e) {
       print("Error signing in with email: $e");
@@ -53,6 +57,13 @@ class AuthService {
       );
 
       await _auth.signInWithCredential(googleAuthCredential);
+
+      FireStoreServices.publicUserData(_auth.currentUser!.uid).set({
+        "email": _auth.currentUser!.email,
+        "name": _auth.currentUser!.displayName,
+        "photoUrl": _auth.currentUser!.photoURL,
+      });
+
       return Status.success();
     } catch (e) {
       print("Error signing in with Google: $e");
@@ -77,11 +88,15 @@ class AuthService {
       final user = _auth.currentUser;
       if (name != null && name.isNotEmpty && name != user?.displayName) {
         await user?.updateDisplayName(name);
+        await FireStoreServices.publicUserData(user!.uid)
+            .update({"name": name});
         updated = true;
       }
       if (image != null) {
         final photoUrl = await uploadImage(image);
         await user?.updatePhotoURL(photoUrl);
+        await FireStoreServices.publicUserData(user!.uid)
+            .update({"photoUrl": photoUrl});
         updated = true;
       }
       if (!updated) {
