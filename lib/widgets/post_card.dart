@@ -119,7 +119,7 @@ class _PostCardState extends State<PostCard> {
               children: [
                 Row(
                   children: [
-                    const LoveButton(),
+                    LoveButton(postId: widget.post.postId),
                     Text("${widget.post.likeCount} Likes"),
                   ],
                 ),
