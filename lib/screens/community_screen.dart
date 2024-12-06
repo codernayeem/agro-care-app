@@ -1,5 +1,6 @@
 import 'package:agro_care_app/model/post_model.dart';
 import 'package:agro_care_app/providers/auth_provider.dart';
+import 'package:agro_care_app/screens/my_post_screen.dart';
 import 'package:agro_care_app/services/firestore_services.dart';
 import 'package:agro_care_app/theme/colors.dart';
 import 'package:agro_care_app/widgets/coummunity_top_input.dart';
@@ -11,6 +12,7 @@ import 'package:provider/provider.dart';
 
 import '../services/auth_services.dart';
 import '../widgets/post_card.dart';
+import 'liked_post_screen.dart';
 
 class CommunityScreen extends StatefulWidget {
   const CommunityScreen({super.key});
@@ -46,6 +48,22 @@ class _CommunityScreenState extends State<CommunityScreen> {
   void dispose() {
     _scrollController.dispose();
     super.dispose();
+  }
+
+  void onMyPostClick() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const MyPostsScreen(),
+      ),
+    );
+  }
+
+  void onLikedPostClick() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const LikedPostsScreen(),
+      ),
+    );
   }
 
   @override
@@ -159,8 +177,8 @@ class _CommunityScreenState extends State<CommunityScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               // equal spaced tonal buttons (icon + text) for (my post, loved post, refresh)
-              topCardButton(Icons.post_add, 'My Post', () {}),
-              topCardButton(Icons.favorite, 'Loved Post', () {}),
+              topCardButton(Icons.post_add, 'My Post', onMyPostClick),
+              topCardButton(Icons.favorite, 'Loved Post', onLikedPostClick),
               topCardButton(Icons.refresh, 'Refresh', () {}),
             ],
           ),

@@ -9,8 +9,10 @@ import 'package:timeago/timeago.dart' as timeago;
 
 class PostCard extends StatefulWidget {
   final CommunityPostModel post;
+  final bool myPost;
 
-  const PostCard({Key? key, required this.post}) : super(key: key);
+  const PostCard({Key? key, required this.post, this.myPost = false})
+      : super(key: key);
 
   @override
   State<PostCard> createState() => _PostCardState();
@@ -37,6 +39,72 @@ class _PostCardState extends State<PostCard> {
       builder: (context) {
         return CommentsModal(
           postId: widget.post.postId,
+        );
+      },
+    );
+  }
+
+  void doDeletion() {
+    FireStoreServices.communityRef()
+        .collection('posts')
+        .doc(widget.post.postId)
+        .delete();
+    // removes likes & comments
+    FireStoreServices.communityRef()
+        .collection('post_likes')
+        .where('postId', isEqualTo: widget.post.postId)
+        .get()
+        .then((value) {
+      for (var doc in value.docs) {
+        doc.reference.delete();
+      }
+    });
+    FireStoreServices.communityRef()
+        .collection('comments')
+        .where('postId', isEqualTo: widget.post.postId)
+        .get()
+        .then((value) {
+      for (var doc in value.docs) {
+        doc.reference.delete();
+      }
+    });
+  }
+
+  void onDeletePress() {
+    // show dialog
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text(
+            'Delete Post',
+            style: TextStyle(
+              fontSize: 16.0,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          backgroundColor: Colors.white,
+          surfaceTintColor: Colors.white,
+          content: const Text('This cant be undone. Are you sure?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+            FilledButton.tonal(
+              onPressed: () {
+                doDeletion();
+                Navigator.of(context).pop();
+              },
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(Colors.red.shade100),
+              ),
+              child: const Text('Delete',
+                  style: TextStyle(color: Color.fromARGB(255, 90, 16, 11))),
+            ),
+          ],
         );
       },
     );
@@ -91,6 +159,12 @@ class _PostCardState extends State<PostCard> {
                     ),
                   ],
                 ),
+                const Spacer(),
+                if (widget.myPost)
+                  IconButton(
+                    icon: Icon(Icons.delete, color: Colors.grey.shade500),
+                    onPressed: onDeletePress,
+                  ),
               ],
             ),
             const Divider(),
