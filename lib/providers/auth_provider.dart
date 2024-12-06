@@ -25,6 +25,7 @@ class MyAuthProvider with ChangeNotifier {
       return;
     }
     var user = _auth.currentUser!;
+    userId = user.uid;
     userName = user.displayName ?? "";
     userEmail = user.email ?? "";
     userPhotoUrl = user.photoURL ?? "";

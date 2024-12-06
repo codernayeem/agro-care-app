@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../screens/create_post_page.dart';
+
 class CommunityTopBar extends StatefulWidget {
   const CommunityTopBar({super.key});
 
@@ -36,40 +38,49 @@ class _CommunityTopBarState extends State<CommunityTopBar> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      decoration: BoxDecoration(
-        color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(24.0),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          AnimatedSwitcher(
-            duration: const Duration(milliseconds: 300),
-            transitionBuilder: (Widget child, Animation<double> animation) {
-              final offsetAnimation = Tween<Offset>(
-                begin: child.key == ValueKey<int>(_currentHintIndex)
-                    ? const Offset(0, 1)
-                    : const Offset(0, -1),
-                end: Offset.zero,
-              ).animate(animation);
-              return FadeTransition(
-                opacity: animation,
-                child: SlideTransition(
-                  position: offsetAnimation,
-                  child: child,
-                ),
-              );
-            },
-            child: Text(
-              hints[_currentHintIndex],
-              key: ValueKey<int>(_currentHintIndex),
-              style: const TextStyle(color: Colors.black54, fontSize: 14.0),
-            ),
+    return InkWell(
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => const CreatePostPage(),
           ),
-        ],
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        decoration: BoxDecoration(
+          color: Colors.grey[200],
+          borderRadius: BorderRadius.circular(24.0),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              transitionBuilder: (Widget child, Animation<double> animation) {
+                final offsetAnimation = Tween<Offset>(
+                  begin: child.key == ValueKey<int>(_currentHintIndex)
+                      ? const Offset(0, 1)
+                      : const Offset(0, -1),
+                  end: Offset.zero,
+                ).animate(animation);
+                return FadeTransition(
+                  opacity: animation,
+                  child: SlideTransition(
+                    position: offsetAnimation,
+                    child: child,
+                  ),
+                );
+              },
+              child: Text(
+                hints[_currentHintIndex],
+                key: ValueKey<int>(_currentHintIndex),
+                style: const TextStyle(color: Colors.black54, fontSize: 14.0),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
