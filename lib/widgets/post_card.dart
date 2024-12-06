@@ -1,4 +1,5 @@
 import 'package:agro_care_app/services/firestore_services.dart';
+import 'package:agro_care_app/widgets/comments_modal.dart';
 import 'package:agro_care_app/widgets/love_button.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +29,17 @@ class _PostCardState extends State<PostCard> {
         userImage = value['photoUrl'];
       });
     });
+  }
+
+  void onCommentTap(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return CommentsModal(
+          postId: widget.post.postId,
+        );
+      },
+    );
   }
 
   @override
@@ -130,7 +142,7 @@ class _PostCardState extends State<PostCard> {
                     Text("${widget.post.commentCount} Comments"),
                     InkWell(
                       onTap: () {
-                        // Add your onTap code here!
+                        onCommentTap(context);
                       },
                       child: const Padding(
                         padding: EdgeInsets.all(8.0),
