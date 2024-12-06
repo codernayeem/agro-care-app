@@ -7,7 +7,6 @@ import 'package:agro_care_app/widgets/coummunity_top_input.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
-import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 
 import '../services/auth_services.dart';
@@ -22,9 +21,6 @@ class CommunityScreen extends StatefulWidget {
 }
 
 class _CommunityScreenState extends State<CommunityScreen> {
-  final ScrollController _scrollController = ScrollController();
-  bool _isHeaderVisible = true;
-
   final ref = FireStoreServices.communityRef();
   final AuthService auth = AuthService();
   late MyAuthProvider authProvider;
@@ -33,20 +29,10 @@ class _CommunityScreenState extends State<CommunityScreen> {
   void initState() {
     super.initState();
     authProvider = Provider.of<MyAuthProvider>(context, listen: false);
-    _scrollController.addListener(() {
-      if (_scrollController.position.userScrollDirection ==
-          ScrollDirection.reverse) {
-        if (_isHeaderVisible) setState(() => _isHeaderVisible = false);
-      } else if (_scrollController.position.userScrollDirection ==
-          ScrollDirection.forward) {
-        if (!_isHeaderVisible) setState(() => _isHeaderVisible = true);
-      }
-    });
   }
 
   @override
   void dispose() {
-    _scrollController.dispose();
     super.dispose();
   }
 
@@ -73,17 +59,12 @@ class _CommunityScreenState extends State<CommunityScreen> {
         body: auth.isAuthenticated
             ? Column(
                 children: [
-                  AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    height: _isHeaderVisible ? 140.0 : 0.0,
-                    child: _buildHeader(),
-                  ),
+                  _buildHeader(),
                   Expanded(
                     child: FirestoreListView<Map<String, dynamic>>(
                       query: ref
                           .collection('posts')
                           .orderBy('created_at', descending: true),
-                      controller: _scrollController,
                       emptyBuilder: (context) {
                         return const Center(
                           child: Column(
