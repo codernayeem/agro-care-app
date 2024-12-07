@@ -57,7 +57,7 @@ class _ProductRowState extends State<ProductRow> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(18, 0, 18, 8),
+          padding: const EdgeInsets.fromLTRB(18, 0, 18, 0),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -136,7 +136,7 @@ class _ProductRowState extends State<ProductRow> {
                   products[index].data() as Map<String, dynamic>);
               return Container(
                 width: 150,
-                padding: const EdgeInsets.only(bottom: 16.0),
+                padding: const EdgeInsets.only(bottom: 16.0, top: 8),
                 child: MiniProductCard(
                   product: product,
                 ),
