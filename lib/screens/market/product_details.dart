@@ -122,22 +122,20 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               automaticallyImplyLeading: false,
               title: Row(
                 children: [
-                  Builder(
-                    builder: (context) => InkWell(
-                      onTap: () {
-                        return Navigator.of(context).pop();
-                      },
-                      child: const SizedBox(
-                        width: 36,
-                        height: 36,
-                        child: Center(
-                          child: Icon(
-                            CupertinoIcons.arrow_left,
-                            color: Colors.black87,
-                            size: 20,
-                          ),
-                        ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.3),
+                      shape: BoxShape.circle,
+                    ),
+                    child: IconButton(
+                      icon: const Icon(
+                        CupertinoIcons.arrow_left,
+                        color: Colors.black87,
+                        size: 20,
                       ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
                     ),
                   ),
                 ],
