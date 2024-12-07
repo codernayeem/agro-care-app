@@ -1,5 +1,6 @@
 import 'package:agro_care_app/firebase_options.dart';
 import 'package:agro_care_app/providers/active_nav_provider.dart';
+import 'package:agro_care_app/providers/cart_provider.dart';
 import 'package:agro_care_app/screens/dashboard_screen.dart';
 import 'package:agro_care_app/screens/intro_screen.dart';
 import 'package:agro_care_app/screens/splash_screen.dart';
@@ -63,7 +64,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<ActiveNavProvider>(
             create: (context) => ActiveNavProvider()),
         ChangeNotifierProvider<MyAuthProvider>(
-            create: (context) => MyAuthProvider())
+            create: (context) => MyAuthProvider()),
+        ChangeNotifierProvider<CartProvider>(
+            create: (context) => CartProvider())
       ],
       child: MaterialApp.router(
         title: 'Agro Care',

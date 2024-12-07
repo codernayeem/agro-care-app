@@ -71,17 +71,15 @@ class _DashBoardScreenState extends State<DashBoardScreen>
         }
       },
       child: Scaffold(
-        body: SafeArea(
-          child: TabBarView(
-            controller: _tabController,
-            physics: const NeverScrollableScrollPhysics(),
-            children: [
-              pages[0],
-              pages[1],
-              pages[2],
-              pages[3],
-            ],
-          ),
+        body: TabBarView(
+          controller: _tabController,
+          physics: const NeverScrollableScrollPhysics(),
+          children: [
+            pages[0],
+            pages[1],
+            pages[2],
+            pages[3],
+          ],
         ),
         extendBody: true,
         bottomNavigationBar: BottomNavigationBar(

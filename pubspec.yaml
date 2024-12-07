@@ -32,6 +32,7 @@ dependencies:
   shared_preferences: ^2.2.3
   image_picker: ^1.0.8
   timeago: ^3.7.0
+  badges: ^3.1.2
   
   
 dev_dependencies:
@@ -48,6 +49,7 @@ flutter:
     - assets/anim/
     - assets/svg/
     - assets/icons/
+    - assets/images/
 
   fonts:
     - family: SanFrancisco

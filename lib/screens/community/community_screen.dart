@@ -56,39 +56,41 @@ class _CommunityScreenState extends State<CommunityScreen> {
   Widget build(BuildContext context) {
     return Consumer<MyAuthProvider>(builder: (context, auth, child) {
       return Scaffold(
-        body: auth.isAuthenticated
-            ? Column(
-                children: [
-                  _buildHeader(),
-                  Expanded(
-                    child: FirestoreListView<Map<String, dynamic>>(
-                      query: ref
-                          .collection('posts')
-                          .orderBy('created_at', descending: true),
-                      emptyBuilder: (context) {
-                        return const Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.post_add,
-                                  size: 100, color: Colors.grey),
-                              SizedBox(height: 10),
-                              Text('No posts yet',
-                                  style: TextStyle(color: Colors.grey)),
-                            ],
-                          ),
-                        );
-                      },
-                      itemBuilder: (context, snapshot) {
-                        final post = CommunityPostModel.fromJson(
-                            snapshot.data(), snapshot.id);
-                        return PostCard(post: post);
-                      },
+        body: SafeArea(
+          child: auth.isAuthenticated
+              ? Column(
+                  children: [
+                    _buildHeader(),
+                    Expanded(
+                      child: FirestoreListView<Map<String, dynamic>>(
+                        query: ref
+                            .collection('posts')
+                            .orderBy('created_at', descending: true),
+                        emptyBuilder: (context) {
+                          return const Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.post_add,
+                                    size: 100, color: Colors.grey),
+                                SizedBox(height: 10),
+                                Text('No posts yet',
+                                    style: TextStyle(color: Colors.grey)),
+                              ],
+                            ),
+                          );
+                        },
+                        itemBuilder: (context, snapshot) {
+                          final post = CommunityPostModel.fromJson(
+                              snapshot.data(), snapshot.id);
+                          return PostCard(post: post);
+                        },
+                      ),
                     ),
-                  ),
-                ],
-              )
-            : unAuthenticated(),
+                  ],
+                )
+              : unAuthenticated(),
+        ),
       );
     });
   }

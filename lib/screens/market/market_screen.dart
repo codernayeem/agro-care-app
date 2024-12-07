@@ -1,211 +1,285 @@
-import 'package:agro_care_app/model/product_model.dart';
-import 'package:agro_care_app/services/firestore_services.dart';
+import 'package:agro_care_app/providers/cart_provider.dart';
 import 'package:agro_care_app/theme/colors.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
+
+import 'package:badges/badges.dart' as badges;
+import 'package:provider/provider.dart';
+import '../../widgets/carousel_slider.dart';
+import '../../widgets/featured_categories_ui.dart';
+import '../../widgets/product_row.dart';
+import '../../widgets/shimmer_helper.dart';
+import 'product_list_screen.dart';
 
 class MarketScreen extends StatelessWidget {
   const MarketScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    var ref = FireStoreServices.db.collection('products');
+    final double statusBarHeight = MediaQuery.of(context).padding.top;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('All Products'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: FirestoreQueryBuilder<Map<String, dynamic>>(
-          query: ref,
-          builder: (context, snapshot, _) {
-            if (snapshot.isFetching) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            if (snapshot.hasError) {
-              return const Center(child: Text('Something went wrong'));
-            }
-            if (snapshot.docs.isEmpty) {
-              return const Center(child: Text('No products found'));
-            }
-
-            return GridView.builder(
-              padding: const EdgeInsets.all(8),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                childAspectRatio: 0.8,
-                crossAxisSpacing: 8,
-                mainAxisSpacing: 8,
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(60),
+          child: buildAppBar(statusBarHeight, context),
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const SizedBox(height: 10),
+              const MyCarouselSlider(),
+              const Padding(
+                padding: EdgeInsets.fromLTRB(18, 16, 18, 0),
+                child: Row(
+                  children: [
+                    Text(
+                      "Featured Categories",
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                    ),
+                    Spacer(),
+                  ],
+                ),
               ),
-              itemCount: snapshot.docs.length,
-              itemBuilder: (context, index) {
-                if (snapshot.hasMore && index + 1 == snapshot.docs.length) {
-                  // Tell FirestoreQueryBuilder to try to obtain more items.
-                  // It is safe to call this function from within the build method.
-                  snapshot.fetchMore();
-                }
-                final product =
-                    Product.fromFirestore(snapshot.docs[index].data());
-                return MiniProductCard(product: product);
-              },
-            );
-          },
+              const SizedBox(
+                height: 150,
+                child: HomeFeaturedCategories(),
+              ),
+              ProductRow(
+                title: "Best Selling Products",
+                flag: ProductRow.BEST_SELLING,
+                maxItem: 6,
+                onSeeAll: () {},
+              ),
+              ProductRow(
+                title: "New Products",
+                flag: ProductRow.NEW_PRODUCTS,
+                maxItem: 6,
+                onSeeAll: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return const ProductListScreen(
+                      title: "New Products",
+                      flag: ProductListScreen.NEW_PRODUCTS,
+                      canSort: false,
+                    );
+                  }));
+                },
+              ),
+              // top 6 categories
+              ProductRow(
+                title: "Seeds",
+                flag: ProductRow.CATEGORY,
+                maxItem: 6,
+                onSeeAll: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return const ProductListScreen(
+                      title: "Seeds",
+                      flag: ProductListScreen.CATEGORY,
+                      category: 'seeds',
+                      canSort: true,
+                    );
+                  }));
+                },
+                category: 'seeds',
+              ),
+              ProductRow(
+                title: "Fertilizers",
+                flag: ProductRow.CATEGORY,
+                maxItem: 6,
+                onSeeAll: () {},
+                category: 'fertilizers',
+              ),
+              ProductRow(
+                title: "Pesticides",
+                flag: ProductRow.CATEGORY,
+                maxItem: 6,
+                onSeeAll: () {},
+                category: 'pesticides',
+              ),
+              ProductRow(
+                title: "Tools",
+                flag: ProductRow.CATEGORY,
+                maxItem: 6,
+                onSeeAll: () {},
+                category: 'tools',
+              ),
+              ProductRow(
+                title: "Indoor Plants",
+                flag: ProductRow.CATEGORY,
+                maxItem: 6,
+                onSeeAll: () {},
+                category: 'indoor_plants',
+              ),
+              ProductRow(
+                title: "Irrigation Supplies",
+                flag: ProductRow.CATEGORY,
+                maxItem: 6,
+                onSeeAll: () {},
+                category: 'irrigation',
+              ),
+            ],
+          ),
         ),
       ),
-      // body: FirestoreListView<Map<String, dynamic>>(
-      //   query: ref,
-      //   emptyBuilder: (context) {
-      //     return const Center(
-      //       child: Text('No products found'),
-      //     );
-      //   },
-      //   itemBuilder: (context, snapshot) {
-      //     final product = Product.fromFirestore(snapshot.data());
-      //     return MiniProductCard(product: product);
-      //   },
-      // ),
     );
   }
-}
 
-class MiniProductCard extends StatelessWidget {
-  final Product product;
-  const MiniProductCard({required this.product, Key? key}) : super(key: key);
-
-  Future<bool> addToCart(BuildContext context) async {
-    return true;
+  Widget buildCard(BuildContext context, String text, IconData icon,
+      void Function()? onTapFunction) {
+    return Flexible(
+      flex: 1,
+      fit: FlexFit.tight,
+      child: Container(
+        height: 150,
+        margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.only(
+            topRight: Radius.circular(36),
+            topLeft: Radius.circular(8),
+            bottomLeft: Radius.circular(8),
+            bottomRight: Radius.circular(8),
+          ),
+          gradient: const LinearGradient(
+            colors: [
+              Color.fromARGB(127, 50, 122, 246),
+              Color.fromARGB(233, 50, 122, 246)
+            ], // Attractive gradient
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.15), // Subtle shadow
+              blurRadius: 10,
+              offset: const Offset(0, 6),
+            ),
+          ],
+        ),
+        child: InkWell(
+          borderRadius: const BorderRadius.only(
+            topRight: Radius.circular(30),
+            topLeft: Radius.circular(12),
+            bottomLeft: Radius.circular(12),
+            bottomRight: Radius.circular(12),
+          ),
+          splashColor: const Color.fromARGB(255, 52, 62, 203)
+              .withOpacity(0.3), // Splash color
+          onTap: onTapFunction,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const SizedBox(height: 8),
+              Icon(
+                icon,
+                size: 48,
+                color: Colors.white,
+              ),
+              const SizedBox(height: 12),
+              Text(
+                text,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      clipBehavior: Clip.hardEdge,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(6),
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(.07),
-            blurRadius: 4,
-            spreadRadius: 0,
-            offset: const Offset(0.0, 8.0),
-          )
-        ],
+  AppBar buildAppBar(double statusBarHeight, BuildContext context) {
+    return AppBar(
+      automaticallyImplyLeading: false,
+      // Don't show the leading button
+      backgroundColor: Colors.white,
+      centerTitle: false,
+      elevation: 0,
+      flexibleSpace: Padding(
+        padding:
+            const EdgeInsets.only(top: 10.0, bottom: 10, left: 10, right: 10),
+        child: Row(
+          children: [
+            const SizedBox(width: 4),
+            Expanded(
+              child: InkWell(
+                onTap: () {
+                  // Navigator.push(context,
+                  //     MaterialPageRoute(builder: (context) {
+                  //   return Filter();
+                  // }));
+                },
+                splashColor: AppColors.primaryColor.withOpacity(0.3),
+                child: homeSearchBox(context: context),
+              ),
+            ),
+            const SizedBox(width: 4),
+            // Cart
+            IconButton(
+              icon: badges.Badge(
+                badgeStyle: badges.BadgeStyle(
+                  shape: badges.BadgeShape.circle,
+                  badgeColor: AppColors.primaryColor,
+                  borderRadius: BorderRadius.circular(10),
+                  padding: const EdgeInsets.all(5),
+                ),
+                badgeAnimation: const badges.BadgeAnimation.slide(
+                  toAnimate: false,
+                ),
+                badgeContent: Consumer<CartProvider>(
+                  builder: (context, cart, child) {
+                    return Text(
+                      "${cart.cartItemsCount}",
+                      style: const TextStyle(fontSize: 10, color: Colors.white),
+                    );
+                  },
+                ),
+                child: Image.asset(
+                  "assets/icons/cart.png",
+                  color: Colors.black87,
+                  height: 24,
+                ),
+              ),
+              onPressed: () {
+                // Navigator.push(context, MaterialPageRoute(builder: (context) {
+                //   return Cart(hasBottomnav: false);
+                // }));
+              },
+            ),
+          ],
+        ),
       ),
-      child: Material(
-        color: Colors.transparent,
-        clipBehavior: Clip.hardEdge,
-        child: InkWell(
-          onTap: () {},
-          splashColor: AppColors.primaryDarkColor.withOpacity(.08),
-          child: Stack(children: [
-            Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Flexible(
-                    child: SizedBox(
-                        width: double.infinity,
-                        child: ClipRRect(
-                            borderRadius: const BorderRadius.vertical(
-                                top: Radius.circular(6),
-                                bottom: Radius.circular(6)),
-                            child: CachedNetworkImage(
-                              placeholder: (context, url) => const Center(
-                                child: CircularProgressIndicator(),
-                              ),
-                              imageUrl: product.imageUrl,
-                              fit: BoxFit.contain,
-                              errorWidget: (context, url, error) =>
-                                  const Icon(Icons.error),
-                            ))),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(10, 6, 8, 2),
-                    child: Text(
-                      product.name,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 2,
-                      style: const TextStyle(
-                          fontFamily: 'SanFranciscoLight',
-                          color: Colors.black87,
-                          fontSize: 11,
-                          height: 1.2,
-                          fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(10, 0, 8, 2),
-                    child: Text(
-                      product.category,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                      style: const TextStyle(
-                          color: Colors.grey,
-                          fontSize: 10,
-                          fontWeight: FontWeight.w500),
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      product.originalPrice != product.currentPrice
-                          ? Padding(
-                              padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
-                              child: Text(
-                                "${product.originalPrice}৳",
-                                maxLines: 1,
-                                style: const TextStyle(
-                                    decoration: TextDecoration.lineThrough,
-                                    color: Colors.grey,
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                            )
-                          : Container(),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(
-                            product.originalPrice != product.currentPrice
-                                ? 4
-                                : 8,
-                            0,
-                            0,
-                            0),
-                        child: Text(
-                          "${product.currentPrice}৳",
-                          maxLines: 1,
-                          style: const TextStyle(
-                              color: AppColors.primaryDarkColor,
-                              fontSize: 11,
-                              fontWeight: FontWeight.w600),
-                        ),
-                      ),
-                      const Spacer(),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            left: 0, top: 0, right: 4, bottom: 4),
-                        child: InkWell(
-                          onTap: () async {
-                            addToCart(context);
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.all(4),
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                            ),
-                            child: const Icon(
-                              Icons.add_circle_outline_rounded,
-                              color: AppColors.primaryDarkColor,
-                              size: 24,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ]),
-          ]),
+    );
+  }
+
+  Widget homeSearchBox({required BuildContext context}) {
+    return Container(
+      height: 36,
+      decoration: BoxDecorations.buildBoxDecoration_1().copyWith(
+        color: Colors.white70,
+        border: Border.all(color: AppColors.primaryColor, width: 1.0),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              "Search Anything",
+              style: TextStyle(fontSize: 13.0, color: Colors.grey[500]),
+            ),
+            Image.asset(
+              'assets/icons/search.png',
+              height: 16,
+              color: Colors.grey[500],
+            )
+          ],
         ),
       ),
     );
