@@ -1,3 +1,4 @@
+import 'package:agro_care_app/screens/market/product_list_screen.dart';
 import 'package:agro_care_app/services/firestore_services.dart';
 import 'package:agro_care_app/widgets/shimmer_helper.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -71,11 +72,13 @@ class _HomeFeaturedCategoriesState extends State<HomeFeaturedCategories> {
               surfaceTintColor: Colors.white,
               child: InkWell(
                 onTap: () {
-                  // Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  //   return CategoryProducts(
-                  //     slug: featuredCategoryList[index].slug,
-                  //   );
-                  // }));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return ProductListScreen(
+                        flag: ProductListScreen.CATEGORY,
+                        title: featuredCategoryList[index]['title'],
+                        canSort: true,
+                        category: featuredCategoryList[index]['key']);
+                  }));
                 },
                 splashColor:
                     const Color.fromARGB(255, 194, 194, 194).withOpacity(0.3),

@@ -280,7 +280,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         product.originalPrice != product.currentPrice
             ? Padding(
                 padding: const EdgeInsets.only(right: 8.0),
-                child: Text("${product.originalPrice}৳",
+                child: Text("৳${product.originalPrice}",
                     style: const TextStyle(
                       decoration: TextDecoration.lineThrough,
                       color: Color.fromRGBO(224, 224, 225, 1),
@@ -290,7 +290,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               )
             : Container(),
         Text(
-          "${product.currentPrice}৳",
+          "৳${product.currentPrice}",
           style: const TextStyle(
               color: AppColors.primaryColor,
               fontSize: 15.0,

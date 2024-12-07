@@ -168,7 +168,7 @@ class _QuantityPriceRowState extends State<QuantityPriceRow> {
           Padding(
             padding: const EdgeInsets.only(left: 5.0),
             child: Text(
-              '${_totalPrice!}৳',
+              '৳${_totalPrice!}',
               style: const TextStyle(
                   color: AppColors.primaryColor,
                   fontSize: 16.0,

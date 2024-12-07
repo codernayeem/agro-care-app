@@ -106,7 +106,7 @@ class MiniProductCard extends StatelessWidget {
                                   padding:
                                       const EdgeInsets.fromLTRB(8, 0, 0, 0),
                                   child: Text(
-                                    "${product.originalPrice}৳",
+                                    "৳${product.originalPrice}",
                                     maxLines: 1,
                                     style: const TextStyle(
                                         decoration: TextDecoration.lineThrough,
@@ -119,7 +119,7 @@ class MiniProductCard extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
                             child: Text(
-                              "${product.currentPrice}৳",
+                              "৳${product.currentPrice}",
                               maxLines: 1,
                               style: const TextStyle(
                                   color: AppColors.primaryDarkColor,
