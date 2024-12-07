@@ -9,6 +9,7 @@ import '../../widgets/featured_categories_ui.dart';
 import '../../widgets/product_row.dart';
 import '../../widgets/shimmer_helper.dart';
 import 'product_list_screen.dart';
+import 'search_screen.dart';
 
 class MarketScreen extends StatelessWidget {
   const MarketScreen({super.key});
@@ -209,10 +210,9 @@ class MarketScreen extends StatelessWidget {
             Expanded(
               child: InkWell(
                 onTap: () {
-                  // Navigator.push(context,
-                  //     MaterialPageRoute(builder: (context) {
-                  //   return Filter();
-                  // }));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return const SearchScreen();
+                  }));
                 },
                 splashColor: AppColors.primaryColor.withOpacity(0.3),
                 child: homeSearchBox(context: context),
