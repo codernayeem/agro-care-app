@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Product {
+  final String id;
   final String name;
   final double originalPrice;
   final double currentPrice;
@@ -12,6 +13,7 @@ class Product {
   final String tags;
 
   Product({
+    required this.id,
     required this.name,
     required this.originalPrice,
     required this.currentPrice,
@@ -24,8 +26,9 @@ class Product {
   });
 
   // Convert Firebase data to Product object
-  factory Product.fromFirestore(Map<String, dynamic> data) {
+  factory Product.fromFirestore(Map<String, dynamic> data, String documentID) {
     return Product(
+      id: documentID,
       name: data['name'] ?? '',
       originalPrice: (data['original_price'] as num).toDouble(),
       currentPrice: (data['current_price'] as num).toDouble(),

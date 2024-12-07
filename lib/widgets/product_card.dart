@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../model/product_model.dart';
+import '../screens/market/product_details.dart';
 import '../theme/colors.dart';
 
 class MiniProductCard extends StatelessWidget {
@@ -35,7 +36,15 @@ class MiniProductCard extends StatelessWidget {
         color: Colors.transparent,
         clipBehavior: Clip.hardEdge,
         child: InkWell(
-          onTap: () {},
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) {
+                  return ProductDetailsScreen(productID: product.id);
+                },
+              ),
+            );
+          },
           splashColor: AppColors.primaryDarkColor.withOpacity(.08),
           child: Stack(children: [
             Column(

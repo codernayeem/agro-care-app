@@ -170,8 +170,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
                         // It is safe to call this function from within the build method.
                         snapshot.fetchMore();
                       }
-                      final product =
-                          Product.fromFirestore(snapshot.docs[index].data());
+                      final product = Product.fromFirestore(
+                          snapshot.docs[index].data(), snapshot.docs[index].id);
                       return MiniProductCard(
                           product: product, biggerAddButton: true);
                     },

@@ -133,7 +133,8 @@ class _ProductRowState extends State<ProductRow> {
             itemCount: products.length,
             itemBuilder: (context, index) {
               var product = Product.fromFirestore(
-                  products[index].data() as Map<String, dynamic>);
+                  products[index].data() as Map<String, dynamic>,
+                  products[index].id);
               return Container(
                 width: 150,
                 padding: const EdgeInsets.only(bottom: 16.0, top: 8),
