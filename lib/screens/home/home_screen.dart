@@ -10,6 +10,8 @@ import 'package:shimmer/shimmer.dart';
 import '../../widgets/carousel_slider.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
+import '../scan/camera_page.dart';
+
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -35,7 +37,12 @@ class HomeScreen extends StatelessWidget {
                         "Scan A Leaf",
                         Icons.category,
                         () {
-                          // Navigator.pushNamed(context, '/categories');
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const CameraPage(),
+                            ),
+                          );
                         },
                       ),
                     ),
