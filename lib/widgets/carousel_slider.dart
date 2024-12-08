@@ -63,11 +63,11 @@ class _MyCarouselSliderState extends State<MyCarouselSlider> {
           CarouselSlider(
             carouselController: carouselController,
             options: CarouselOptions(
-              aspectRatio: 338 / 140,
+              aspectRatio: 338 / 140 - 0.1,
               viewportFraction: 1,
               initialPage: 0,
               enableInfiniteScroll: true,
-              reverse: false,
+              reverse: true,
               autoPlay: true,
               autoPlayInterval: const Duration(seconds: 5),
               autoPlayAnimationDuration: const Duration(milliseconds: 1000),
@@ -85,41 +85,24 @@ class _MyCarouselSliderState extends State<MyCarouselSlider> {
                 builder: (BuildContext context) {
                   return Padding(
                     padding: const EdgeInsets.only(
-                        left: 18, right: 18, top: 0, bottom: 0),
-                    child: Stack(
-                      children: <Widget>[
-                        InkWell(
-                          onTap: () {
-                            // GoRouter.of(context).go('/product');
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.05),
-                                  spreadRadius: 0,
-                                  blurRadius: 0,
-                                  offset: const Offset(0, 1),
-                                ),
-                              ],
-                            ),
-                            child: AspectRatio(
-                              aspectRatio: 338 / 140,
-                              child: Container(
-                                width: double.infinity,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  image: DecorationImage(
-                                    image: CachedNetworkImageProvider(i),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
+                        left: 18, right: 18, top: 8, bottom: 14),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(6),
+                        image: DecorationImage(
+                          image: CachedNetworkImageProvider(i),
+                          fit: BoxFit.cover,
                         ),
-                      ],
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.4),
+                            spreadRadius: 4,
+                            blurRadius: 4,
+                            offset: const Offset(0, 1),
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 },
