@@ -2,14 +2,18 @@ import 'dart:async';
 
 import 'package:agro_care_app/screens/market/product_list_screen.dart';
 import 'package:agro_care_app/services/firestore_services.dart';
+import 'package:agro_care_app/services/market_service.dart';
 import 'package:agro_care_app/theme/colors.dart';
 import 'package:agro_care_app/widgets/product_row.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 import '../../model/product_model.dart';
+import '../../providers/cart_provider.dart';
 import '../../widgets/quantity_price.dart';
 import '../../widgets/shimmer_helper.dart';
 
@@ -76,6 +80,35 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   }
 
   Future<bool> onPressAddToCart(int quantity) async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    if (auth.currentUser == null) {
+      showLoginWarning();
+      return false;
+    }
+    String userId = auth.currentUser!.uid;
+
+    MarketService marketService = MarketService(userId: userId);
+    try {
+      if (await marketService.addToCart(product.id, quantity)) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Product added to cart'),
+            backgroundColor: AppColors.primaryColor,
+          ),
+        );
+        context.read<CartProvider>().getCount();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Failed to add to cart'),
+            backgroundColor: Color.fromARGB(255, 175, 76, 76),
+          ),
+        );
+      }
+    } catch (e) {
+      print(e);
+      return false;
+    }
     return true;
   }
 

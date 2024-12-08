@@ -1,7 +1,11 @@
+import 'package:agro_care_app/services/market_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../model/product_model.dart';
+import '../providers/cart_provider.dart';
 import '../screens/market/product_details.dart';
 import '../theme/colors.dart';
 
@@ -12,8 +16,29 @@ class MiniProductCard extends StatelessWidget {
       {required this.product, Key? key, this.biggerAddButton = false})
       : super(key: key);
 
-  Future<bool> addToCart(BuildContext context) async {
-    return true;
+  Future<void> addToCart(BuildContext context) async {
+    var userId = FirebaseAuth.instance.currentUser!.uid;
+    MarketService marketService = MarketService(userId: userId);
+    var success = await marketService.addToCart(product.id, 1);
+    if (success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Added to cart'),
+          duration: const Duration(seconds: 1),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Failed to add to cart'),
+          duration: const Duration(seconds: 1),
+        ),
+      );
+    }
+
+    CartProvider cartProvider =
+        Provider.of<CartProvider>(context, listen: false);
+    cartProvider.getCount();
   }
 
   @override

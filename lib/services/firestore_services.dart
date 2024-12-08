@@ -11,4 +11,8 @@ class FireStoreServices {
   static DocumentReference<Map<String, dynamic>> publicUserData(String uid) {
     return db.collection('user_data').doc(uid);
   }
+
+  static DocumentReference<Map<String, dynamic>> cartRef(String uid) {
+    return db.collection('carts').doc(uid);
+  }
 }

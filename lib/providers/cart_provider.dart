@@ -16,14 +16,15 @@ class CartProvider with ChangeNotifier {
 
   void getCount() {
     if (auth.currentUser != null) {
-      var ref = FireStoreServices.db;
-
-      ref.collection('cart').doc(auth.currentUser!.uid).get().then((value) {
-        if (value.data() != null && value.data()!['cartItemsCount'] != null) {
-          cartItemsCount = value.data()!['cartItemsCount'];
-        } else {
-          cartItemsCount = 0;
-        }
+      FireStoreServices.db
+          .collection('carts')
+          .doc(auth.currentUser!.uid)
+          .collection('items')
+          .count()
+          .get()
+          .then((value) {
+        print(value.count);
+        cartItemsCount = value.count!;
         notifyListeners();
       });
     } else {

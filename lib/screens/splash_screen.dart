@@ -1,4 +1,5 @@
 import 'package:agro_care_app/providers/auth_provider.dart';
+import 'package:agro_care_app/providers/cart_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -15,6 +16,8 @@ class _SplashScreenState extends State<SplashScreen> {
   void startChecking() async {
     MyAuthProvider authProvider = context.read();
     authProvider.initialize();
+    CartProvider cartProvider = context.read();
+    cartProvider.getCount();
 
     Future.delayed(const Duration(milliseconds: 1000)).then((value) async {
       if (await checkFirstTime()) {

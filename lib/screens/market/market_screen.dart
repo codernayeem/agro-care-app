@@ -8,6 +8,7 @@ import '../../widgets/carousel_slider.dart';
 import '../../widgets/featured_categories_ui.dart';
 import '../../widgets/product_row.dart';
 import '../../widgets/shimmer_helper.dart';
+import 'cart_screen.dart';
 import 'product_list_screen.dart';
 import 'search_screen.dart';
 
@@ -246,9 +247,9 @@ class MarketScreen extends StatelessWidget {
                 ),
               ),
               onPressed: () {
-                // Navigator.push(context, MaterialPageRoute(builder: (context) {
-                //   return Cart(hasBottomnav: false);
-                // }));
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return const CartPage();
+                }));
               },
             ),
           ],
