@@ -1,5 +1,6 @@
 import 'package:agro_care_app/model/product_model.dart';
 import 'package:agro_care_app/providers/cart_provider.dart';
+import 'package:agro_care_app/screens/market/address_ui.dart';
 import 'package:agro_care_app/services/firestore_services.dart';
 import 'package:agro_care_app/services/market_service.dart';
 import 'package:agro_care_app/theme/colors.dart';
@@ -58,8 +59,41 @@ class _CartPageState extends State<CartPage> {
     return total;
   }
 
-  void onPressProceedToShipping() {
-    // Navigator.pushNamed(context, '/shipping');
+  Future<String> chooseAddress() async {
+    // a bottom sheet to choose address (a text field to enter address)
+    var res = await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      showDragHandle: true,
+      builder: (context) {
+        return const AddressModal();
+      },
+    );
+    if (res != null && res.isNotEmpty) {
+      return res;
+    }
+    return '';
+  }
+
+  void onPressProceedToShipping() async {
+    String address = await chooseAddress();
+    if (address.isNotEmpty) {
+      if (await marketService.placeOrder(address)) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Order placed successfully.'),
+          ),
+        );
+        context.read<CartProvider>().getCount();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Failed to place order.'),
+          ),
+        );
+      }
+    }
   }
 
   Container buildBottomContainer(int count, double total) {
@@ -137,8 +171,9 @@ class _CartPageState extends State<CartPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text('Shopping Cart'),
+        title: const Text('Shopping Cart', style: TextStyle(fontSize: 18)),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: cartRef.snapshots(),
@@ -161,47 +196,45 @@ class _CartPageState extends State<CartPage> {
             builder: (context, totalSnapshot) {
               return Column(
                 children: [
-                  SizedBox(height: 8),
+                  const SizedBox(height: 14),
                   Expanded(
                     child: Container(
-                      child: Container(
-                        padding: const EdgeInsets.all(8),
-                        margin: const EdgeInsets.symmetric(horizontal: 12),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(6),
-                          border:
-                              Border.all(color: Colors.grey.withOpacity(0.2)),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
-                              spreadRadius: 1,
-                              blurRadius: 3,
-                              offset: const Offset(0, 0),
-                            ),
-                          ],
-                        ),
-                        child: ListView(
-                          children: snapshot.data!.docs.map((cartItem) {
-                            return CartItemUiFuture(
-                              productId: cartItem.id,
-                              quantity: cartItem['quantity'],
-                              onPressDelete: (id) async {
-                                if (await marketService.removeFromCart(id)) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text('Item removed from cart.'),
-                                    ),
-                                  );
-                                  context.read<CartProvider>().getCount();
-                                }
-                              },
-                            );
-                          }).toList(),
-                        ),
+                      padding: const EdgeInsets.all(8),
+                      margin: const EdgeInsets.symmetric(horizontal: 12),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(color: Colors.grey.withOpacity(0.2)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            spreadRadius: 1,
+                            blurRadius: 3,
+                            offset: const Offset(0, 0),
+                          ),
+                        ],
+                      ),
+                      child: ListView(
+                        children: snapshot.data!.docs.map((cartItem) {
+                          return CartItemUiFuture(
+                            productId: cartItem.id,
+                            quantity: cartItem['quantity'],
+                            onPressDelete: (id) async {
+                              if (await marketService.removeFromCart(id)) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Item removed from cart.'),
+                                  ),
+                                );
+                                context.read<CartProvider>().getCount();
+                              }
+                            },
+                          );
+                        }).toList(),
                       ),
                     ),
                   ),
+                  const SizedBox(height: 14),
                   buildBottomContainer(
                       snapshot.data!.docs.length, totalSnapshot.data ?? 0.0),
                 ],
