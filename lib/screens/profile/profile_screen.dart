@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
+import '../market/order_list_screen.dart';
 import 'auth_screen.dart';
 import 'change_password_screen.dart';
 import 'edit_profile_screen.dart';
@@ -147,7 +148,13 @@ class ProfileScreen extends StatelessWidget {
         _listTile(
           'Your Orders',
           'View your order history',
-          () {},
+          () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => OrderListScreen(),
+              ),
+            );
+          },
           "assets/icons/orders.png",
         ),
         _listTile(

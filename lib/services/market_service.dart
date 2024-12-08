@@ -85,6 +85,7 @@ class MarketService {
         'items': orderItems,
         'status': 'pending',
         'address': address,
+        'itemsCount': orderItems.length,
         'total': total,
         'createdAt': FieldValue.serverTimestamp(),
       });
