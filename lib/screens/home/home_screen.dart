@@ -1,5 +1,6 @@
 import 'package:agro_care_app/screens/home/news_page.dart';
 import 'package:agro_care_app/theme/colors.dart';
+import 'package:agro_care_app/widgets/weather_widgets.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_pagination/firebase_pagination.dart';
@@ -51,6 +52,9 @@ class HomeScreen extends StatelessWidget {
                   ],
                 ),
               ),
+              Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: const MyWeatherWidget()),
               FirestorePagination(
                 limit: 10,
                 viewType: ViewType.list,
