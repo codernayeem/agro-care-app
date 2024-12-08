@@ -11,6 +11,7 @@ class Product {
   final int soldCount;
   final DateTime createdAt;
   final String tags;
+  final int quantity;
 
   Product({
     required this.id,
@@ -23,10 +24,12 @@ class Product {
     required this.soldCount,
     required this.createdAt,
     required this.tags,
+    this.quantity = 1,
   });
 
   // Convert Firebase data to Product object
-  factory Product.fromFirestore(Map<String, dynamic> data, String documentID) {
+  factory Product.fromFirestore(Map<String, dynamic> data, String documentID,
+      {int quantity = 1}) {
     return Product(
       id: documentID,
       name: data['name'] ?? '',
@@ -38,6 +41,7 @@ class Product {
       soldCount: data['sold_count'] ?? 0,
       createdAt: (data['created_at'] as Timestamp).toDate(),
       tags: data['tags'] ?? '',
+      quantity: quantity,
     );
   }
 }

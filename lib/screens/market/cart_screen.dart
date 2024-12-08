@@ -9,6 +9,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../widgets/no_item.dart';
 import '../../widgets/shimmer_helper.dart';
 
 import 'cart_item_ui.dart';
@@ -22,8 +23,13 @@ class CartPage extends StatefulWidget {
 
 class _CartPageState extends State<CartPage> {
   late CollectionReference cartRef;
-  double totalCost = 0.0;
   late MarketService marketService;
+
+  bool isReady = false;
+  bool isError = false;
+
+  double totalCost = 0.0;
+  List<Product> cartProducts = [];
 
   @override
   void initState() {
@@ -34,6 +40,53 @@ class _CartPageState extends State<CartPage> {
         .doc(userId)
         .collection('items');
     marketService = MarketService(userId: userId);
+    fetchCartItems();
+  }
+
+  Future<void> fetchCartItems() async {
+    setState(() {
+      cartProducts.clear();
+      totalCost = 0.0;
+      isReady = false;
+      isError = false;
+    });
+    try {
+      final cartSnapshot = await cartRef.get();
+      List<Product> products = [];
+
+      for (var item in cartSnapshot.docs) {
+        String productId = item.id;
+        int quantity = item['quantity'];
+
+        // Fetch product details to get the price
+        final productSnapshot = await FireStoreServices.db
+            .collection('products')
+            .doc(productId)
+            .get();
+
+        if (productSnapshot.exists) {
+          products.add(Product.fromFirestore(productSnapshot.data()!, productId,
+              quantity: quantity));
+        }
+      }
+
+      double total = 0.0;
+      for (var product in products) {
+        total += product.currentPrice * product.quantity;
+      }
+
+      setState(() {
+        cartProducts = products;
+        totalCost = total;
+        isReady = true;
+        isError = false;
+      });
+    } catch (e) {
+      setState(() {
+        isReady = true;
+        isError = true;
+      });
+    }
   }
 
   Future<double> calculateTotalCost() async {
@@ -77,6 +130,9 @@ class _CartPageState extends State<CartPage> {
   }
 
   void onPressProceedToShipping() async {
+    if (cartProducts.isEmpty) {
+      return;
+    }
     String address = await chooseAddress();
     if (address.isNotEmpty) {
       if (await marketService.placeOrder(address)) {
@@ -171,126 +227,173 @@ class _CartPageState extends State<CartPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: const Text('Shopping Cart', style: TextStyle(fontSize: 18)),
       ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: cartRef.snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return const Center(child: Text('Something went wrong.'));
-          }
-
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return ShimmerHelper()
-                .buildListShimmer(item_count: 10, item_height: 100.0);
-          }
-
-          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return const Center(child: Text('Your cart is empty.'));
-          }
-
-          return FutureBuilder<double>(
-            future: calculateTotalCost(),
-            builder: (context, totalSnapshot) {
-              return Column(
-                children: [
-                  const SizedBox(height: 14),
-                  Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.all(8),
-                      margin: const EdgeInsets.symmetric(horizontal: 12),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(6),
-                        border: Border.all(color: Colors.grey.withOpacity(0.2)),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            spreadRadius: 1,
-                            blurRadius: 3,
-                            offset: const Offset(0, 0),
-                          ),
-                        ],
-                      ),
-                      child: ListView(
-                        children: snapshot.data!.docs.map((cartItem) {
-                          return CartItemUiFuture(
-                            productId: cartItem.id,
-                            quantity: cartItem['quantity'],
-                            onPressDelete: (id) async {
-                              if (await marketService.removeFromCart(id)) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Item removed from cart.'),
+      body: Column(
+        children: [
+          Expanded(
+            child: RefreshIndicator(
+              color: AppColors.primaryColor,
+              backgroundColor: Colors.white,
+              onRefresh: fetchCartItems,
+              child: isReady
+                  ? isError
+                      ? const Center(child: Text('Failed to load cart items.'))
+                      : cartProducts.isEmpty
+                          ? const NoItemWidget(msg: "Your cart is empty")
+                          : CustomScrollView(
+                              slivers: [
+                                SliverPadding(
+                                  padding: const EdgeInsets.all(8),
+                                  sliver: SliverList(
+                                    delegate: SliverChildBuilderDelegate(
+                                      (context, index) {
+                                        final product = cartProducts[index];
+                                        return CartItemUI(
+                                          quantity: product.quantity,
+                                          cartProduct: product,
+                                          onPressDelete: (id) async {
+                                            if (await marketService
+                                                .removeFromCart(id)) {
+                                              context
+                                                  .read<CartProvider>()
+                                                  .getCount();
+                                              fetchCartItems();
+                                            }
+                                          },
+                                        );
+                                      },
+                                      childCount: cartProducts.length,
+                                    ),
                                   ),
-                                );
-                                context.read<CartProvider>().getCount();
-                              }
-                            },
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 14),
-                  buildBottomContainer(
-                      snapshot.data!.docs.length, totalSnapshot.data ?? 0.0),
-                ],
-              );
-            },
-          );
-        },
+                                ),
+                              ],
+                            )
+                  : ShimmerHelper()
+                      .buildListShimmer(item_count: 10, item_height: 100.0),
+            ),
+          ),
+          buildBottomContainer(cartProducts.length, totalCost),
+        ],
       ),
+      // body: StreamBuilder<QuerySnapshot>(
+      //   stream: cartRef.snapshots(),
+      //   builder: (context, snapshot) {
+      //     if (snapshot.hasError) {
+      //       return const Center(child: Text('Something went wrong.'));
+      //     }
+
+      //     if (snapshot.connectionState == ConnectionState.waiting) {
+      //       return ShimmerHelper()
+      //           .buildListShimmer(item_count: 10, item_height: 100.0);
+      //     }
+
+      //     if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+      //       return const Center(child: Text('Your cart is empty.'));
+      //     }
+
+      //     return FutureBuilder<double>(
+      //       future: calculateTotalCost(),
+      //       builder: (context, totalSnapshot) {
+      //         return Column(
+      //           children: [
+      //             const SizedBox(height: 14),
+      //             Expanded(
+      //               child: Container(
+      //                 padding: const EdgeInsets.all(8),
+      //                 margin: const EdgeInsets.symmetric(horizontal: 12),
+      //                 decoration: BoxDecoration(
+      //                   color: Colors.white,
+      //                   borderRadius: BorderRadius.circular(6),
+      //                   border: Border.all(color: Colors.grey.withOpacity(0.2)),
+      //                   boxShadow: [
+      //                     BoxShadow(
+      //                       color: Colors.black.withOpacity(0.1),
+      //                       spreadRadius: 1,
+      //                       blurRadius: 3,
+      //                       offset: const Offset(0, 0),
+      //                     ),
+      //                   ],
+      //                 ),
+      //                 child: ListView(
+      //                   children: snapshot.data!.docs.map((cartItem) {
+      //                     return CartItemUiFuture(
+      //                       productId: cartItem.id,
+      //                       quantity: cartItem['quantity'],
+      //                       onPressDelete: (id) async {
+      //                         if (await marketService.removeFromCart(id)) {
+      //                           ScaffoldMessenger.of(context).showSnackBar(
+      //                             const SnackBar(
+      //                               content: Text('Item removed from cart.'),
+      //                             ),
+      //                           );
+      //                           context.read<CartProvider>().getCount();
+      //                         }
+      //                       },
+      //                     );
+      //                   }).toList(),
+      //                 ),
+      //               ),
+      //             ),
+      //             const SizedBox(height: 14),
+      //             buildBottomContainer(
+      //                 snapshot.data!.docs.length, totalSnapshot.data ?? 0.0),
+      //           ],
+      //         );
+      //       },
+      //     );
+      //   },
+      // ),
     );
   }
 }
 
-class CartItemUiFuture extends StatelessWidget {
-  final String productId;
-  final int quantity;
-  final void Function(String) onPressDelete;
+// class CartItemUiFuture extends StatelessWidget {
+//   final String productId;
+//   final int quantity;
+//   final void Function(String) onPressDelete;
 
-  const CartItemUiFuture(
-      {Key? key,
-      required this.productId,
-      required this.quantity,
-      required this.onPressDelete})
-      : super(key: key);
+//   const CartItemUiFuture(
+//       {Key? key,
+//       required this.productId,
+//       required this.quantity,
+//       required this.onPressDelete})
+//       : super(key: key);
 
-  Future<Map<String, dynamic>?> fetchProductDetails() async {
-    final productSnapshot =
-        await FireStoreServices.db.collection('products').doc(productId).get();
+//   Future<Map<String, dynamic>?> fetchProductDetails() async {
+//     final productSnapshot =
+//         await FireStoreServices.db.collection('products').doc(productId).get();
 
-    if (productSnapshot.exists) {
-      return productSnapshot.data();
-    }
+//     if (productSnapshot.exists) {
+//       return productSnapshot.data();
+//     }
 
-    return null;
-  }
+//     return null;
+//   }
 
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<Map<String, dynamic>?>(
-      future: fetchProductDetails(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const ListTile(title: Text('Loading...'));
-        }
+//   @override
+//   Widget build(BuildContext context) {
+//     return FutureBuilder<Map<String, dynamic>?>(
+//       future: fetchProductDetails(),
+//       builder: (context, snapshot) {
+//         if (snapshot.connectionState == ConnectionState.waiting) {
+//           return const ListTile(title: Text('Loading...'));
+//         }
 
-        if (!snapshot.hasData) {
-          return const ListTile(title: Text('Product not found.'));
-        }
+//         if (!snapshot.hasData) {
+//           return const ListTile(title: Text('Product not found.'));
+//         }
 
-        return CartItemUI(
-          quantity: quantity,
-          cartProduct: Product.fromFirestore(snapshot.data!, productId),
-          onPressDelete: (id) {
-            onPressDelete(id);
-          },
-        );
-      },
-    );
-  }
-}
+//         return CartItemUI(
+//           quantity: quantity,
+//           cartProduct: Product.fromFirestore(snapshot.data!, productId),
+//           onPressDelete: (id) {
+//             onPressDelete(id);
+//           },
+//         );
+//       },
+//     );
+//   }
+// }
