@@ -27,7 +27,7 @@ class HomeScreen extends StatelessWidget {
               const MyCarouselSlider(),
               Container(
                 padding: const EdgeInsets.all(16),
-                height: 180,
+                height: 200,
                 width: double.infinity,
                 child: Row(
                   children: [
@@ -35,7 +35,7 @@ class HomeScreen extends StatelessWidget {
                       child: buildCard(
                         context,
                         "Scan A Leaf",
-                        Icons.category,
+                        null,
                         () {
                           Navigator.push(
                             context,
@@ -49,8 +49,18 @@ class HomeScreen extends StatelessWidget {
                     Expanded(
                       child: buildCard(
                         context,
-                        "Plant Care",
-                        Icons.category,
+                        "Call Us on Phone",
+                        Icons.call_outlined,
+                        () {
+                          // Navigator.pushNamed(context, '/categories');
+                        },
+                      ),
+                    ),
+                    Expanded(
+                      child: buildCard(
+                        context,
+                        "Knock Us on WhatsApp",
+                        Icons.message_outlined,
                         () {
                           // Navigator.pushNamed(context, '/categories');
                         },
@@ -79,14 +89,19 @@ class HomeScreen extends StatelessWidget {
                   return getItemView(context, data);
                 },
                 onEmpty: const Center(
-                  child: Text(
-                    "Maybe you should check your internet connection",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Color.fromARGB(197, 10, 28, 4),
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                    ),
+                  child: Column(
+                    children: [
+                      SizedBox(height: 20),
+                      Text(
+                        "Maybe you should check your internet connection",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Color.fromARGB(197, 10, 28, 4),
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -97,7 +112,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget buildCard(BuildContext context, String text, IconData icon,
+  Widget buildCard(BuildContext context, String text, IconData? icon,
       void Function()? onTapFunction) {
     return Flexible(
       flex: 1,
@@ -140,20 +155,30 @@ class HomeScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const SizedBox(height: 8),
-              Image.asset(
-                'assets/icons/leaf.png',
-                height: 48,
-                width: 48,
-                // color: Colors.white,
-              ),
+              if (icon != null)
+                Icon(
+                  icon,
+                  size: 48,
+                  color: Color.fromARGB(255, 12, 97, 15),
+                )
+              else
+                Image.asset(
+                  'assets/icons/leaf.png',
+                  height: 48,
+                  width: 48,
+                  // color: Colors.white,
+                ),
               const SizedBox(height: 12),
-              Text(
-                text,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Color.fromARGB(255, 8, 68, 2),
-                  fontWeight: FontWeight.w600,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: Text(
+                  text,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: Color.fromARGB(255, 0, 0, 0),
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ],
@@ -221,7 +246,6 @@ class HomeScreen extends StatelessWidget {
                 fontSize: 13,
                 fontWeight: FontWeight.w400,
                 letterSpacing: 0.12,
-                fontFamily: 'Hind Siliguri',
               ),
             ),
             const SizedBox(height: 0),
@@ -232,7 +256,6 @@ class HomeScreen extends StatelessWidget {
                 fontSize: 17,
                 fontWeight: FontWeight.w500,
                 letterSpacing: 0.12,
-                fontFamily: 'Hind Siliguri',
               ),
             ),
             Row(
@@ -244,7 +267,6 @@ class HomeScreen extends StatelessWidget {
                   style: TextStyle(
                     color: Color(0xFF4E4B66),
                     fontSize: 13,
-                    fontFamily: 'Lexend',
                     fontWeight: FontWeight.w600,
                     letterSpacing: 0.12,
                   ),

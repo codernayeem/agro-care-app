@@ -90,35 +90,80 @@ class MarketScreen extends StatelessWidget {
                 title: "Fertilizers",
                 flag: ProductRow.CATEGORY,
                 maxItem: 6,
-                onSeeAll: () {},
+                onSeeAll: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return const ProductListScreen(
+                      title: "Fertilizers",
+                      flag: ProductListScreen.CATEGORY,
+                      category: 'fertilizers',
+                      canSort: true,
+                    );
+                  }));
+                },
                 category: 'fertilizers',
               ),
               ProductRow(
                 title: "Pesticides",
                 flag: ProductRow.CATEGORY,
                 maxItem: 6,
-                onSeeAll: () {},
+                onSeeAll: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return const ProductListScreen(
+                      title: "Pesticides",
+                      flag: ProductListScreen.CATEGORY,
+                      category: 'pesticides',
+                      canSort: true,
+                    );
+                  }));
+                },
                 category: 'pesticides',
               ),
               ProductRow(
                 title: "Tools",
                 flag: ProductRow.CATEGORY,
                 maxItem: 6,
-                onSeeAll: () {},
+                onSeeAll: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return const ProductListScreen(
+                      title: "Tools",
+                      flag: ProductListScreen.CATEGORY,
+                      category: 'tools',
+                      canSort: true,
+                    );
+                  }));
+                },
                 category: 'tools',
               ),
               ProductRow(
                 title: "Indoor Plants",
                 flag: ProductRow.CATEGORY,
                 maxItem: 6,
-                onSeeAll: () {},
+                onSeeAll: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return const ProductListScreen(
+                      title: "Indoor Plants",
+                      flag: ProductListScreen.CATEGORY,
+                      category: 'indoor_plants',
+                      canSort: true,
+                    );
+                  }));
+                },
                 category: 'indoor_plants',
               ),
               ProductRow(
                 title: "Irrigation Supplies",
                 flag: ProductRow.CATEGORY,
                 maxItem: 6,
-                onSeeAll: () {},
+                onSeeAll: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return const ProductListScreen(
+                      title: "Irrigation Supplies",
+                      flag: ProductListScreen.CATEGORY,
+                      category: 'irrigation',
+                      canSort: true,
+                    );
+                  }));
+                },
                 category: 'irrigation',
               ),
             ],
