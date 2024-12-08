@@ -113,7 +113,7 @@ class _CartPageState extends State<CartPage> {
     return total;
   }
 
-  Future<String> chooseAddress() async {
+  Future<Map<String, String>?> chooseAddress() async {
     // a bottom sheet to choose address (a text field to enter address)
     var res = await showModalBottomSheet(
       context: context,
@@ -123,33 +123,37 @@ class _CartPageState extends State<CartPage> {
       builder: (context) {
         return const AddressModal();
       },
-    );
+    ) as Map<String, String>?;
     if (res != null && res.isNotEmpty) {
       return res;
     }
-    return '';
+    return null;
   }
 
   void onPressProceedToShipping() async {
     if (cartProducts.isEmpty) {
       return;
     }
-    String address = await chooseAddress();
-    if (address.isNotEmpty) {
-      if (await marketService.placeOrder(address)) {
-        context.read<CartProvider>().getCount();
-        fetchCartItems();
-        Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => OrderListScreen(),
-        ));
-      } else {
-        fetchCartItems();
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Failed to place order.'),
-          ),
-        );
-      }
+    var data = await chooseAddress();
+    if (data == null) {
+      return;
+    }
+    String address = data['address']!;
+    String phone = data['phone']!;
+
+    if (await marketService.placeOrder(address, phone)) {
+      context.read<CartProvider>().getCount();
+      fetchCartItems();
+      Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => OrderListScreen(),
+      ));
+    } else {
+      fetchCartItems();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed to place order.'),
+        ),
+      );
     }
   }
 

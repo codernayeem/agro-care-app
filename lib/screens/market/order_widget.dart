@@ -70,7 +70,7 @@ class OrderWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _detailRow(Icons.location_on, 'Address', data['address']),
-        _detailRow(Icons.phone, 'Contact', data['mobile'] ?? 'Not Provided'),
+        _detailRow(Icons.phone, 'Contact', data['phone'] ?? 'Not Provided'),
         _detailRow(Icons.access_time, 'Ordered At',
             timeago.format((data['createdAt'] as Timestamp).toDate())),
         _detailRow(Icons.attach_money, 'Total', '৳${data['total']}',

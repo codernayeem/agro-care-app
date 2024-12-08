@@ -64,7 +64,7 @@ class MarketService {
   }
 
   // orders
-  Future<bool> placeOrder(String address) async {
+  Future<bool> placeOrder(String address, String phone) async {
     try {
       final items = await cartRef.collection('items').get();
       var productRef = FireStoreServices.db.collection('products');
@@ -85,6 +85,7 @@ class MarketService {
         'items': orderItems,
         'status': 'pending',
         'address': address,
+        'phone': phone,
         'itemsCount': orderItems.length,
         'total': total,
         'createdAt': FieldValue.serverTimestamp(),
