@@ -39,6 +39,7 @@ class _LoveButtonState extends State<LoveButton>
       if (value.docs.isNotEmpty) {
         setState(() {
           isLiked = true;
+          _controller.value = 1.0;
         });
       }
     });
