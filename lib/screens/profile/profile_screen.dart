@@ -67,54 +67,61 @@ class ProfileScreen extends StatelessWidget {
             width: 180,
           ),
         ),
-        Column(
-          children: [
-            const SizedBox(height: 16),
-            Container(
-              width: double.infinity,
-              margin: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: Colors.green,
-                  width: 4,
-                ),
-              ),
-              child: Center(
-                child: Container(
-                  width: 100,
-                  height: 100,
+        SizedBox(
+          width: double.infinity,
+          child: SingleChildScrollView(
+            // bouncing
+            physics: const BouncingScrollPhysics(),
+            child: Column(
+              children: [
+                const SizedBox(height: 16),
+                Container(
+                  width: double.infinity,
+                  margin: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: Colors.white,
-                      width: 2,
+                      color: Colors.green,
+                      width: 4,
                     ),
-                    image: DecorationImage(
-                      image: CachedNetworkImageProvider(
-                        auth.userPhotoUrl,
+                  ),
+                  child: Center(
+                    child: Container(
+                      width: 100,
+                      height: 100,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: Colors.white,
+                          width: 2,
+                        ),
+                        image: DecorationImage(
+                          image: CachedNetworkImageProvider(
+                            auth.userPhotoUrl,
+                          ),
+                          fit: BoxFit.cover,
+                        ),
                       ),
-                      fit: BoxFit.cover,
                     ),
                   ),
                 ),
-              ),
+                Text(
+                  auth.userName,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  auth.userEmail,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ],
             ),
-            Text(
-              auth.userName,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Text(
-              auth.userEmail,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-          ],
+          ),
         ),
       ],
     );
@@ -130,12 +137,6 @@ class ProfileScreen extends StatelessWidget {
             _editProfile(context);
           },
           "assets/icons/profile.png",
-        ),
-        _listTile(
-          'Address Book',
-          'Manage your saved addresses',
-          () {},
-          "assets/icons/location.png",
         ),
         _listTile(
           'Change Password',
@@ -165,6 +166,35 @@ class ProfileScreen extends StatelessWidget {
           },
           "assets/icons/logout.png",
           color: const Color.fromARGB(255, 114, 26, 34),
+        ),
+
+        // disclaimer
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.only(top: 14),
+                child: Text(
+                  'Agro Care App v1.0.0',
+                  style: TextStyle(
+                    color: Colors.black54,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 4),
+                child: Text(
+                  'By @codernayeem',
+                  style: TextStyle(
+                    color: Colors.black54,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ],
     );

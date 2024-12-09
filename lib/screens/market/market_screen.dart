@@ -53,7 +53,15 @@ class MarketScreen extends StatelessWidget {
                 title: "Best Selling Products",
                 flag: ProductRow.BEST_SELLING,
                 maxItem: 6,
-                onSeeAll: () {},
+                onSeeAll: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return const ProductListScreen(
+                      title: "Best Selling Products",
+                      flag: ProductListScreen.BEST_SELLING,
+                      canSort: false,
+                    );
+                  }));
+                },
               ),
               ProductRow(
                 title: "New Products",
