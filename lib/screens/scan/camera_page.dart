@@ -12,6 +12,7 @@ import 'package:uuid/uuid.dart';
 
 import 'predict_crop_select_widget.dart';
 import 'prediction_page.dart';
+import 'scan_help_page.dart';
 
 class CameraSettings {
   String cameraRes = "high";
@@ -24,6 +25,13 @@ class PredictCrop {
 
   const PredictCrop(this.bdName, this.enName, this.icon);
 }
+
+// tomato, potato, corn
+List<PredictCrop> availableCrops = [
+  const PredictCrop("টমেটো", "tomato", "assets/icons/tomato.png"),
+  const PredictCrop("আলু", "potato", "assets/icons/potato.png"),
+  const PredictCrop("ভুট্টা", "corn", "assets/icons/corn.png"),
+];
 
 class CameraPage extends StatefulWidget {
   const CameraPage({super.key});
@@ -49,13 +57,6 @@ class _CameraPageState extends State<CameraPage>
   late double imageAreaWidth;
 
   bool imageShowing = false;
-
-  // tomato, potato, corn
-  List<PredictCrop> availableCrops = [
-    const PredictCrop("টমেটো", "tomato", "assets/icons/tomato.png"),
-    const PredictCrop("আলু", "potato", "assets/icons/potato.png"),
-    const PredictCrop("ভুট্টা", "corn", "assets/icons/corn.png"),
-  ];
 
   Future<void> _initializeCamera() async {
     final cameras = await availableCameras();
@@ -405,7 +406,11 @@ class _CameraPageState extends State<CameraPage>
                 icon: const Icon(Icons.question_mark_rounded),
                 color: const Color.fromARGB(255, 255, 255, 255),
                 onPressed: () {
-                  Navigator.of(context).pushNamed("scanHelpPage");
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const ScanHelpPage(),
+                    ),
+                  );
                 },
               ),
               const Spacer(),

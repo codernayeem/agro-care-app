@@ -7,6 +7,8 @@ import 'package:lottie/lottie.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:path_provider/path_provider.dart';
 
+import 'sample_image_row.dart';
+import 'scan_help_page.dart';
 import 'tts_button.dart';
 
 class PredictionPage extends StatefulWidget {
@@ -383,11 +385,11 @@ class _PredictionPageState extends State<PredictionPage> {
               fontWeight: FontWeight.w500,
             ),
           ),
-          // ImageTakingTips(
-          //   key: const ValueKey("ImageTakingTips"),
-          //   forNonLeaf: predictionModel!.notLeaf,
-          //   plantIndx: widget.plantIndex,
-          // ),
+          ImageTakingTips(
+            key: const ValueKey("ImageTakingTips"),
+            forNonLeaf: notLeaf,
+            plantIndx: widget.plantIndex,
+          ),
           const SizedBox(height: 10),
           const Divider(),
           const SizedBox(height: 10),
@@ -396,7 +398,11 @@ class _PredictionPageState extends State<PredictionPage> {
               const Spacer(),
               OutlinedButton.icon(
                 onPressed: () {
-                  // Navigator.of(context).pushNamed("scanHelpPage");
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const ScanHelpPage(),
+                    ),
+                  );
                 },
                 icon: const Icon(Icons.question_mark_rounded),
                 label: const Text(
