@@ -46,6 +46,8 @@ dependencies:
   html_unescape: ^2.0.0
   url_launcher: ^6.3.0
   path_provider: 2.1.1
+  flutter_sslcommerz: ^2.3.6
+  fluttertoast: ^8.2.5
   
   
 dev_dependencies:

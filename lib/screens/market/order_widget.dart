@@ -1,12 +1,78 @@
+import 'package:agro_care_app/services/firestore_services.dart';
 import 'package:agro_care_app/theme/colors.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_sslcommerz/model/SSLCSdkType.dart';
+import 'package:flutter_sslcommerz/model/SSLCTransactionInfoModel.dart';
+import 'package:flutter_sslcommerz/model/SSLCommerzInitialization.dart';
+import 'package:flutter_sslcommerz/model/SSLCurrencyType.dart';
+import 'package:flutter_sslcommerz/sslcommerz.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class OrderWidget extends StatelessWidget {
   final Map<String, dynamic> data;
   const OrderWidget(this.data, {super.key});
+
+  void onSuccessFullPay(String orderId) {
+    String userId = FirebaseAuth.instance.currentUser!.uid;
+    var data_ref = FireStoreServices.db.collection('orders').doc(orderId);
+
+    data_ref.update({'isPaid': true});
+  }
+
+  void onClickPay(String orderId, double total) {
+    Sslcommerz sslcommerz = Sslcommerz(
+        initializer: SSLCommerzInitialization(
+            multi_card_name: "visa,master,bkash,nexus,nagad,rocket",
+            currency: SSLCurrencyType.BDT,
+            product_category: "Product",
+            sdkType: SSLCSdkType.TESTBOX,
+            store_id: "agroc6757350dc5689",
+            store_passwd: "agroc6757350dc5689@ssl",
+            total_amount: total,
+            tran_id: "custom_transaction_id"));
+
+    sslcommerz.payNow().then((value) {
+      SSLCTransactionInfoModel result = value;
+      try {
+        print("result status ::${result.status ?? ""}");
+
+        if (result.status!.toLowerCase() == "failed") {
+          Fluttertoast.showToast(
+            msg: "Transaction Failed",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0,
+          );
+        } else if (result.status!.toLowerCase() == "closed") {
+          Fluttertoast.showToast(
+            msg: "Canceled By User",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0,
+          );
+        } else {
+          Fluttertoast.showToast(
+              msg: "Amount paid ৳${result.amount ?? 0}",
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.BOTTOM,
+              backgroundColor: AppColors.primaryColor,
+              textColor: Colors.white,
+              fontSize: 16.0);
+          onSuccessFullPay(orderId);
+        }
+      } catch (e) {
+        debugPrint(e.toString());
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +139,7 @@ class OrderWidget extends StatelessWidget {
         _detailRow(Icons.phone, 'Contact', data['phone'] ?? 'Not Provided'),
         _detailRow(Icons.access_time, 'Ordered At',
             timeago.format((data['createdAt'] as Timestamp).toDate())),
-        _detailRow(Icons.attach_money, 'Total', '৳${data['total']}',
+        _detailRow2(Icons.attach_money, 'Total', '৳${data['total']}',
             highlight: true),
       ],
     );
@@ -148,6 +214,63 @@ class OrderWidget extends StatelessWidget {
                       : AppColors.grayDark),
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _detailRow2(IconData icon, String label, String value,
+      {bool highlight = false}) {
+    bool isPaid = data['isPaid'] ?? false;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        children: [
+          Icon(icon, size: 20, color: AppColors.primaryColor),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              '$label: $value',
+              style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: highlight ? FontWeight.bold : FontWeight.w400,
+                  color: highlight
+                      ? const Color.fromARGB(255, 41, 122, 44)
+                      : AppColors.grayDark),
+            ),
+          ),
+          // paid status
+          if (isPaid)
+            // a text
+            const Text(
+              'Paid',
+              style: TextStyle(
+                color: Color.fromARGB(255, 41, 122, 44),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          if (!isPaid)
+            FilledButton.tonal(
+              onPressed: () {
+                onClickPay(data['orderId'], data['total']);
+              },
+              style: FilledButton.styleFrom(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                backgroundColor: Colors.white,
+                side: const BorderSide(
+                  color: Colors.blue,
+                ),
+              ),
+              child: const Text(
+                'Pay Online',
+                style: TextStyle(
+                  color: Colors.blue,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            )
         ],
       ),
     );
