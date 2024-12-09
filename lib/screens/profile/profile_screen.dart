@@ -1,4 +1,5 @@
 import 'package:agro_care_app/providers/auth_provider.dart';
+import 'package:agro_care_app/providers/cart_provider.dart';
 import 'package:agro_care_app/services/auth_services.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,7 @@ class ProfileScreen extends StatelessWidget {
 
   void _logout(BuildContext context) async {
     await _authService.handleSignOut();
+    context.read<CartProvider>().getCount();
   }
 
   void _editProfile(BuildContext context) {

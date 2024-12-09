@@ -4,8 +4,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 import '../../model/status_model.dart';
+import '../../providers/cart_provider.dart';
 import '../../widgets/buttons.dart';
 
 class AuthScreen extends StatefulWidget {
@@ -32,6 +34,7 @@ class _AuthScreenState extends State<AuthScreen> {
 
   void afterScuccess() {
     context.go('/dashboard');
+    context.read<CartProvider>().getCount();
   }
 
   void emailSignUp() async {

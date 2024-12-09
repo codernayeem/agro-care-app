@@ -1,8 +1,11 @@
 import 'package:agro_care_app/providers/cart_provider.dart';
 import 'package:agro_care_app/theme/colors.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 import 'package:badges/badges.dart' as badges;
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../widgets/carousel_slider.dart';
 import '../../widgets/featured_categories_ui.dart';
@@ -300,6 +303,20 @@ class MarketScreen extends StatelessWidget {
                 ),
               ),
               onPressed: () {
+                if (FirebaseAuth.instance.currentUser == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: const Text("Please login to view cart"),
+                      action: SnackBarAction(
+                        label: "Login",
+                        onPressed: () {
+                          GoRouter.of(context).push('/auth/login');
+                        },
+                      ),
+                    ),
+                  );
+                  return;
+                }
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
                   return const CartPage();
                 }));
