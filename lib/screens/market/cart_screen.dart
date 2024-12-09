@@ -145,7 +145,7 @@ class _CartPageState extends State<CartPage> {
       context.read<CartProvider>().getCount();
       fetchCartItems();
       Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => OrderListScreen(),
+        builder: (context) => OrderListScreen(showAnim: true),
       ));
     } else {
       fetchCartItems();
