@@ -86,6 +86,23 @@ class HomeScreen extends StatelessWidget {
               Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: const MyWeatherWidget()),
+              const SizedBox(height: 16),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Latest News for you",
+                      style: TextStyle(
+                        color: Colors.black87,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               FirestorePagination(
                 limit: 10,
                 viewType: ViewType.list,
