@@ -1,3 +1,4 @@
+import 'package:agro_care_app/providers/auth_provider.dart';
 import 'package:agro_care_app/services/auth_services.dart';
 import 'package:agro_care_app/theme/colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -61,7 +62,11 @@ class _AuthScreenState extends State<AuthScreen> {
       loading = true;
     });
 
+    var provider = context.read<MyAuthProvider>();
+
+    provider.authStateChanges.pause();
     Status status = await _authService.emailSignUp(email, password, name);
+    provider.authStateChanges.resume();
     if (status.success) {
       afterScuccess();
     } else {

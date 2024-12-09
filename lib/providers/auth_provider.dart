@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -10,10 +12,12 @@ class MyAuthProvider with ChangeNotifier {
   String userEmail = "";
   String userPhotoUrl = "";
 
+  late StreamSubscription<User?> authStateChanges;
+
   void initialize() {
     setUserDetails();
 
-    _auth.authStateChanges().listen((User? user) {
+    authStateChanges = _auth.authStateChanges().listen((User? user) {
       setUserDetails();
       notifyListeners();
     });

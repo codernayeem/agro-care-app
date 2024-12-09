@@ -30,7 +30,9 @@ class AuthService {
         email: email,
         password: password,
       );
-      await userCredential.user?.updateDisplayName(name);
+      print("User created: ${userCredential.user?.uid} : " + name);
+      var currentUser = FirebaseAuth.instance.currentUser;
+      await currentUser!.updateDisplayName(name);
       FireStoreServices.publicUserData(_auth.currentUser!.uid).set({
         "email": email,
         "name": name,
