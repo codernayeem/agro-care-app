@@ -113,7 +113,7 @@ class _PostCardState extends State<PostCard> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      margin: const EdgeInsets.only(left: 16, right: 16, top: 6, bottom: 6),
       surfaceTintColor: Colors.white,
       color: Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -188,6 +188,7 @@ class _PostCardState extends State<PostCard> {
                             child: Container(
                               width: double.infinity,
                               color: Colors.grey[300],
+                              height: 200,
                             ),
                           ),
                           errorWidget: (context, url, error) =>

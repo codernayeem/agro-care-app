@@ -104,8 +104,8 @@ class _CommunityScreenState extends State<CommunityScreen> {
   Widget _buildHeader() {
     return Container(
       width: double.infinity,
-      margin: const EdgeInsets.all(12),
-      padding: const EdgeInsets.all(10),
+      margin: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 4),
+      padding: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 4),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         color: AppColors.white,
@@ -155,14 +155,17 @@ class _CommunityScreenState extends State<CommunityScreen> {
               ),
             ],
           ),
-          const Divider(),
+          const Divider(
+            height: 4,
+            thickness: 1,
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               // equal spaced tonal buttons (icon + text) for (my post, loved post, refresh)
               topCardButton(Icons.post_add, 'My Post', onMyPostClick),
               topCardButton(Icons.favorite, 'Loved Post', onLikedPostClick),
-              topCardButton(Icons.refresh, 'Refresh', () {}),
+              // topCardButton(Icons.refresh, 'Refresh', () {}),
             ],
           ),
         ],
@@ -171,38 +174,38 @@ class _CommunityScreenState extends State<CommunityScreen> {
   }
 
   Widget topCardButton(IconData icon, String text, Function() onPressed) {
-    return GestureDetector(
-      onTap: onPressed,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-        decoration: BoxDecoration(
-          color: Colors.grey[100],
-          borderRadius: BorderRadius.circular(4),
+    return FilledButton.tonal(
+      onPressed: onPressed,
+      style: FilledButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+        backgroundColor: Colors.grey[100],
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
         ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(2),
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: Icon(
-                icon,
-                color: AppColors.darkGreen,
-              ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(2),
+            decoration: BoxDecoration(
+              color: Colors.grey[200],
+              borderRadius: BorderRadius.circular(4),
             ),
-            const SizedBox(width: 4),
-            Text(
-              text,
-              style: const TextStyle(
-                color: Colors.black87,
-                fontSize: 13,
-              ),
+            child: Icon(
+              icon,
+              color: AppColors.darkGreen,
             ),
-          ],
-        ),
+          ),
+          const SizedBox(width: 4),
+          Text(
+            text,
+            style: const TextStyle(
+              color: Colors.black87,
+              fontSize: 13,
+            ),
+          ),
+        ],
       ),
     );
   }
