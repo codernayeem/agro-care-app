@@ -1,11 +1,11 @@
 import 'package:agro_care_app/providers/auth_provider.dart';
 import 'package:agro_care_app/providers/cart_provider.dart';
 import 'package:agro_care_app/services/auth_services.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
+import '../../helpers/profile_image_provider.dart';
 import '../market/order_list_screen.dart';
 import 'auth_screen.dart';
 import 'change_password_screen.dart';
@@ -98,9 +98,7 @@ class ProfileScreen extends StatelessWidget {
                           width: 2,
                         ),
                         image: DecorationImage(
-                          image: CachedNetworkImageProvider(
-                            auth.userPhotoUrl,
-                          ),
+                          image: profileImageProvider(auth.userPhotoUrl),
                           fit: BoxFit.cover,
                         ),
                       ),

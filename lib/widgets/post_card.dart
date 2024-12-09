@@ -4,6 +4,7 @@ import 'package:agro_care_app/widgets/love_button.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
+import '../helpers/profile_image_provider.dart';
 import '../model/post_model.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -126,7 +127,7 @@ class _PostCardState extends State<PostCard> {
               children: [
                 userImage.isNotEmpty
                     ? CircleAvatar(
-                        backgroundImage: CachedNetworkImageProvider(userImage),
+                        backgroundImage: profileImageProvider(userImage),
                       )
                     : Shimmer.fromColors(
                         baseColor: Colors.grey[300]!,

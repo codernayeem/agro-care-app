@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:agro_care_app/services/auth_services.dart';
 
+import '../../helpers/profile_image_provider.dart';
 import '../../model/status_model.dart';
 import '../../providers/auth_provider.dart';
 
@@ -102,7 +103,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                           children: [
                             CircleAvatar(
                               radius: 50,
-                              backgroundImage: NetworkImage(auth.userPhotoUrl),
+                              backgroundImage:
+                                  profileImageProvider(auth.userPhotoUrl),
                             ),
                             const SizedBox(height: 16),
                             Text(

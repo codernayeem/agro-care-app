@@ -3,10 +3,11 @@ import 'dart:io';
 import 'package:agro_care_app/model/status_model.dart';
 import 'package:agro_care_app/providers/auth_provider.dart';
 import 'package:agro_care_app/services/auth_services.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+
+import '../../helpers/profile_image_provider.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({Key? key}) : super(key: key);
@@ -100,8 +101,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             backgroundColor: Colors.grey.shade200,
                             backgroundImage: _pickedImage != null
                                 ? FileImage(_pickedImage!)
-                                : CachedNetworkImageProvider(auth.userPhotoUrl)
-                                    as ImageProvider,
+                                : profileImageProvider(auth.userPhotoUrl),
                           ),
                           Positioned(
                             bottom: 0,

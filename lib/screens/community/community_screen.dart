@@ -3,11 +3,11 @@ import 'package:agro_care_app/providers/auth_provider.dart';
 import 'package:agro_care_app/services/firestore_services.dart';
 import 'package:agro_care_app/theme/colors.dart';
 import 'package:agro_care_app/widgets/coummunity_top_input.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:provider/provider.dart';
 
+import '../../helpers/profile_image_provider.dart';
 import '../../services/auth_services.dart';
 import '../../widgets/post_card.dart';
 import 'liked_post_screen.dart';
@@ -140,9 +140,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                         width: 1,
                       ),
                       image: DecorationImage(
-                        image: CachedNetworkImageProvider(
-                          authProvider.userPhotoUrl,
-                        ),
+                        image: profileImageProvider(authProvider.userPhotoUrl),
                         fit: BoxFit.cover,
                       ),
                     ),
