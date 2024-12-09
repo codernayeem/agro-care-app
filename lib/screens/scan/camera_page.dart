@@ -157,18 +157,18 @@ class _CameraPageState extends State<CameraPage>
     File? img = await _pickAndCropImage();
     if (img == null) return;
 
-    // Navigator.push(
-    //     context,
-    //     MaterialPageRoute(
-    //       builder: (context) => PredictionPage(
-    //         key: const ValueKey("PredictPage"),
-    //         img,
-    //         0,
-    //         uuid.v4(),
-    //         selectedPredictCrop,
-    //         false,
-    //       ),
-    //     ));
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PredictionPage(
+            key: const ValueKey("PredictPage"),
+            img,
+            0,
+            uuid.v4(),
+            selectedPredictCrop,
+            false,
+          ),
+        ));
   }
 
   void onPredictCropClick(int indx) {
@@ -660,18 +660,18 @@ class _CameraPageState extends State<CameraPage>
   }
 
   void onConfirmingImage() {
-    // Navigator.push(
-    //     context,
-    //     MaterialPageRoute(
-    //       builder: (context) => PredictionPage(
-    //         key: const ValueKey("PredictPage"),
-    //         imageFile!,
-    //         imageAreaWidth,
-    //         imageFileId,
-    //         selectedPredictCrop,
-    //         true,
-    //       ),
-    //     ));
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PredictionPage(
+            key: const ValueKey("PredictPage"),
+            imageFile!,
+            imageAreaWidth,
+            imageFileId,
+            selectedPredictCrop,
+            true,
+          ),
+        ));
   }
 
   void onFlashModeButtonPressed() {
