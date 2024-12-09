@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_pagination/firebase_pagination.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../widgets/carousel_slider.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -14,6 +15,23 @@ import '../scan/camera_page.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
+  final String phoneNumber = "+8801968199036";
+
+  Future<void> _launchCall() async {
+    if (!await launchUrl(Uri.parse("tel:$phoneNumber"))) {
+      print("Could not launch $phoneNumber");
+    }
+  }
+
+  Future<void> _launchWhatsApp() async {
+    final encodedMessage = Uri.encodeComponent("Hello, I need help.");
+    final url = "https://wa.me/$phoneNumber?text=$encodedMessage";
+
+    if (!await launchUrl(Uri.parse(url),
+        mode: LaunchMode.externalApplication)) {
+      print("Could not launch $url");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +53,7 @@ class HomeScreen extends StatelessWidget {
                       child: buildCard(
                         context,
                         "Scan A Leaf",
-                        null,
+                        'assets/icons/leaf.png',
                         () {
                           Navigator.push(
                             context,
@@ -49,21 +67,17 @@ class HomeScreen extends StatelessWidget {
                     Expanded(
                       child: buildCard(
                         context,
-                        "Call Us on Phone",
-                        Icons.call_outlined,
-                        () {
-                          // Navigator.pushNamed(context, '/categories');
-                        },
+                        "Call Us",
+                        'assets/icons/call.webp',
+                        _launchCall,
                       ),
                     ),
                     Expanded(
                       child: buildCard(
                         context,
-                        "Knock Us on WhatsApp",
-                        Icons.message_outlined,
-                        () {
-                          // Navigator.pushNamed(context, '/categories');
-                        },
+                        "Knock us on WhatsApp",
+                        'assets/icons/whatsapp.png',
+                        _launchWhatsApp,
                       ),
                     ),
                   ],
@@ -112,7 +126,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget buildCard(BuildContext context, String text, IconData? icon,
+  Widget buildCard(BuildContext context, String text, String image,
       void Function()? onTapFunction) {
     return Flexible(
       flex: 1,
@@ -128,15 +142,15 @@ class HomeScreen extends StatelessWidget {
           ),
           gradient: const LinearGradient(
             colors: [
-              Color.fromARGB(124, 100, 237, 134),
-              Color.fromARGB(233, 45, 196, 105),
-            ], // Attractive gradient
+              Color.fromARGB(200, 255, 255, 255),
+              Color.fromARGB(213, 255, 255, 255),
+            ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.2), // Subtle shadow
+              color: Colors.black.withOpacity(0.2),
               blurRadius: 10,
               offset: const Offset(0, 6),
             ),
@@ -144,30 +158,23 @@ class HomeScreen extends StatelessWidget {
         ),
         child: InkWell(
           borderRadius: const BorderRadius.only(
-            topRight: Radius.circular(30),
-            topLeft: Radius.circular(12),
-            bottomLeft: Radius.circular(12),
-            bottomRight: Radius.circular(12),
+            topRight: Radius.circular(36),
+            topLeft: Radius.circular(8),
+            bottomLeft: Radius.circular(8),
+            bottomRight: Radius.circular(8),
           ),
-          splashColor: AppColors.primaryColor.withOpacity(0.3), // Splash color
+          splashColor: AppColors.primaryColor.withOpacity(0.6),
+          hoverColor: AppColors.primaryColor.withOpacity(0.1),
           onTap: onTapFunction,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const SizedBox(height: 8),
-              if (icon != null)
-                Icon(
-                  icon,
-                  size: 48,
-                  color: Color.fromARGB(255, 12, 97, 15),
-                )
-              else
-                Image.asset(
-                  'assets/icons/leaf.png',
-                  height: 48,
-                  width: 48,
-                  // color: Colors.white,
-                ),
+              Image.asset(
+                image,
+                height: 48,
+                width: 48,
+              ),
               const SizedBox(height: 12),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -176,8 +183,8 @@ class HomeScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontSize: 14,
-                    color: Color.fromARGB(255, 0, 0, 0),
-                    fontWeight: FontWeight.w600,
+                    color: Color.fromARGB(255, 19, 51, 20),
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ),
