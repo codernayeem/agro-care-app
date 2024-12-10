@@ -1,15 +1,54 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:agro_care_app/services/firestore_services.dart';
 import 'package:agro_care_app/theme/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:lottie/lottie.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:http/http.dart' as http;
 
 import 'sample_image_row.dart';
 import 'scan_help_page.dart';
 import 'tts_button.dart';
+
+class APIResponse {
+  final String plant;
+  final String className;
+  final int classIndex;
+  final bool isHealthy;
+  final String diseaseName;
+  final bool isIdentified;
+  final double confidence;
+  final String details;
+
+  APIResponse(
+      {required this.plant,
+      required this.isHealthy,
+      required this.diseaseName,
+      required this.isIdentified,
+      required this.className,
+      required this.classIndex,
+      required this.confidence,
+      required this.details});
+
+  factory APIResponse.fromJson(Map<String, dynamic> json, double threshold) {
+    return APIResponse(
+      plant: json['plant'],
+      isHealthy: json['details']['isHealthy'],
+      diseaseName: json['details']['diseaseName'],
+      isIdentified:
+          json['confidence'] >= threshold && json['class'] != 'non_leaf',
+      className: json['class'],
+      classIndex: json['class_index'],
+      confidence: json['confidence'],
+      details: json['details']['details'],
+    );
+  }
+}
 
 class PredictionPage extends StatefulWidget {
   final File imageFile;
@@ -32,16 +71,27 @@ class _PredictionPageState extends State<PredictionPage> {
   bool isError = false;
   String errorMsg = "";
 
-  // prediction result
-  String plantName = "";
-  String diseaseName = "";
-  String detailsContent = "";
-  bool isHealthy = false;
-  bool notLeaf = false;
-  double confidence = 0.0;
-  bool identified = false;
+  late String plantName;
 
-  get http => null;
+  // prediction result
+  late APIResponse apiResponse;
+
+  Future<dynamic> fetchAPIandParseJson(String apiLink) async {
+    try {
+      var request = http.MultipartRequest('POST', Uri.parse(apiLink));
+      request.files.add(
+          await http.MultipartFile.fromPath('file', widget.imageFile.path));
+      request.fields['model_index'] = widget.plantIndex.toString();
+      StreamedResponse response = await request.send();
+      if (response.statusCode == 200) {
+        var body = await response.stream.bytesToString();
+        return jsonDecode(body);
+      }
+    } catch (e) {
+      print(e);
+    }
+    return null;
+  }
 
   void startPredicting() async {
     /// Try to predict and sets the predictionModel
@@ -57,38 +107,51 @@ class _PredictionPageState extends State<PredictionPage> {
       await saveDir.create();
     }
 
-    var apiLink = "http://192.168.0.104:4000";
-
-    // call the apilink as get request
-    var response;
-    try {
-      response = await http.get(Uri.parse(apiLink));
-      print(response.body);
-    } catch (e) {
-      print(e);
-      setState(() {
-        isReady = true;
-        isError = true;
-        errorMsg = "Server Error";
-      });
-    }
-
     if (widget.srcCamera) {
       outputImageFile = File('${filesDir.path}/store/${widget.imageUid}');
     } else {
       outputImageFile = widget.imageFile;
     }
 
-    setState(() {
-      isReady = true;
-      isError = true;
-      errorMsg = "Not Implemented Yet";
-    });
+    // call the apilink as get request
+    try {
+      var res = await FireStoreServices.settingRef().get();
+      var apiLink = res.data()!['predict_link'];
+      var thresConf = res.data()!['thres_conf'] as double;
+
+      var response = await fetchAPIandParseJson(apiLink);
+      if (response != null) {
+        apiResponse = APIResponse.fromJson(response, thresConf);
+        setState(() {
+          isReady = true;
+          isError = false;
+          errorMsg = "None";
+        });
+      } else {
+        setState(() {
+          isReady = true;
+          isError = true;
+          errorMsg = "The Server is not responding";
+        });
+      }
+    } catch (e) {
+      print(e);
+      setState(() {
+        isReady = true;
+        isError = true;
+        errorMsg = "Data Parsing Error";
+      });
+    }
   }
 
   @override
   void initState() {
     super.initState();
+    plantName = widget.plantIndex == 0
+        ? "টমেটো"
+        : widget.plantIndex == 1
+            ? "আলু"
+            : "ভুট্টা";
     startPredicting();
   }
 
@@ -209,7 +272,7 @@ class _PredictionPageState extends State<PredictionPage> {
                   ),
                   !isReady
                       ? predictLoding()
-                      : isError
+                      : !isError
                           ? getMainView()
                           : getErrorView(),
                 ],
@@ -283,7 +346,7 @@ class _PredictionPageState extends State<PredictionPage> {
                 ),
               ),
               const SizedBox(width: 22),
-              identified
+              apiResponse.isIdentified
                   ? Expanded(
                       child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -291,7 +354,7 @@ class _PredictionPageState extends State<PredictionPage> {
                         Padding(
                           padding: const EdgeInsets.only(left: 8.0),
                           child: Text(
-                            plantName,
+                            apiResponse.plant,
                             softWrap: true,
                             style: const TextStyle(
                               fontSize: 20,
@@ -303,8 +366,10 @@ class _PredictionPageState extends State<PredictionPage> {
                         Row(
                           children: [
                             getChipView(
-                              isHealthy ? "Healthy" : "Disease Identified",
-                              isHealthy,
+                              apiResponse.isHealthy
+                                  ? "Healthy"
+                                  : "Disease Identified",
+                              apiResponse.isHealthy,
                             ),
                             const Spacer(),
                           ],
@@ -329,9 +394,10 @@ class _PredictionPageState extends State<PredictionPage> {
           ),
           const SizedBox(height: 20),
           // bottom Main Part
-          (identified)
-              ? (isHealthy ? getHealthyView() : getDiseaseDetails())
-              : diseaseNotIdentifiedView(notLeaf: notLeaf)
+          (apiResponse.isIdentified)
+              ? (apiResponse.isHealthy ? getHealthyView() : getDiseaseDetails())
+              : diseaseNotIdentifiedView(
+                  notLeaf: apiResponse.className == "non_leaf"),
         ],
       ),
     );
@@ -503,19 +569,6 @@ class _PredictionPageState extends State<PredictionPage> {
                 ),
               ),
             ),
-            const Spacer(),
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(50),
-                color: Colors.pink.withOpacity(.1),
-              ),
-              child: IconButton(
-                  onPressed: () {},
-                  icon: const Icon(
-                    Icons.favorite,
-                    color: false ? Colors.pink : Colors.grey,
-                  )),
-            )
           ],
         ),
         const SizedBox(height: 10),
@@ -523,21 +576,21 @@ class _PredictionPageState extends State<PredictionPage> {
           children: [
             Expanded(
               child: Text(
-                diseaseName,
+                apiResponse.diseaseName,
                 style: const TextStyle(
                   color: Color(0xFF09051C),
                   fontSize: 24,
-                  fontFamily: 'Hind Siliguri',
                   fontWeight: FontWeight.w700,
                 ),
               ),
             ),
-            TTSButton(key: const ValueKey("TTSButton"), text: detailsContent),
+            TTSButton(
+                key: const ValueKey("TTSButton"), text: apiResponse.details),
           ],
         ),
         const SizedBox(height: 10),
         HtmlWidget(
-          detailsContent,
+          apiResponse.details,
         ),
         const SizedBox(height: 30),
         const SizedBox(height: 50),

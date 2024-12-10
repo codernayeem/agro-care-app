@@ -15,4 +15,8 @@ class FireStoreServices {
   static DocumentReference<Map<String, dynamic>> cartRef(String uid) {
     return db.collection('carts').doc(uid);
   }
+
+  static DocumentReference<Map<String, dynamic>> settingRef() {
+    return FirebaseFirestore.instance.collection('settings').doc('data');
+  }
 }
