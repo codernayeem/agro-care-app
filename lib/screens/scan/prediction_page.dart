@@ -82,6 +82,8 @@ class _PredictionPageState extends State<PredictionPage> {
       request.files.add(
           await http.MultipartFile.fromPath('file', widget.imageFile.path));
       request.fields['model_index'] = widget.plantIndex.toString();
+      request.fields['src'] = widget.srcCamera ? "camera" : "gallery";
+      request.fields['cropWidth'] = widget.cropWidth.toString();
       StreamedResponse response = await request.send();
       if (response.statusCode == 200) {
         var body = await response.stream.bytesToString();
@@ -105,12 +107,6 @@ class _PredictionPageState extends State<PredictionPage> {
     var saveDir = Directory('${filesDir.path}/store');
     if (!await saveDir.exists()) {
       await saveDir.create();
-    }
-
-    if (widget.srcCamera) {
-      outputImageFile = File('${filesDir.path}/store/${widget.imageUid}');
-    } else {
-      outputImageFile = widget.imageFile;
     }
 
     // call the apilink as get request
@@ -342,7 +338,7 @@ class _PredictionPageState extends State<PredictionPage> {
                 height: 100,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(6),
-                  image: DecorationImage(image: FileImage(outputImageFile)),
+                  image: DecorationImage(image: FileImage(widget.imageFile)),
                 ),
               ),
               const SizedBox(width: 22),
@@ -354,7 +350,7 @@ class _PredictionPageState extends State<PredictionPage> {
                         Padding(
                           padding: const EdgeInsets.only(left: 8.0),
                           child: Text(
-                            apiResponse.plant,
+                            plantName,
                             softWrap: true,
                             style: const TextStyle(
                               fontSize: 20,
