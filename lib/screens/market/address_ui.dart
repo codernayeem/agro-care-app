@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../theme/colors.dart';
@@ -15,11 +17,34 @@ class _AddressModalState extends State<AddressModal> {
   final _formKey = GlobalKey<FormState>();
 
   @override
+  void initState() {
+    super.initState();
+    fetchInfo();
+  }
+
+  @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     _addressController.dispose();
     _phoneController.dispose();
+  }
+
+  Future<void> fetchInfo() async {
+    try {
+      var response = await FirebaseFirestore.instance
+          .collection('saved_info')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .get();
+      if (response.exists && response.data() != null) {
+        var data = response.data();
+        if (_addressController.text.isEmpty)
+          _addressController.text = data!['address'];
+        if (_phoneController.text.isEmpty)
+          _phoneController.text = data!['phone'];
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override

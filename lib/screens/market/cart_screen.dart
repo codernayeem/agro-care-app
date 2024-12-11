@@ -141,6 +141,15 @@ class _CartPageState extends State<CartPage> {
     String address = data['address']!;
     String phone = data['phone']!;
 
+    try {
+      FirebaseFirestore.instance
+          .collection('saved_info')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .set(data);
+    } catch (e) {
+      print(e);
+    }
+
     if (await marketService.placeOrder(address, phone)) {
       context.read<CartProvider>().getCount();
       fetchCartItems();
