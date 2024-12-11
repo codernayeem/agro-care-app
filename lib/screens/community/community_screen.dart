@@ -161,8 +161,12 @@ class _CommunityScreenState extends State<CommunityScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               // equal spaced tonal buttons (icon + text) for (my post, loved post, refresh)
-              topCardButton(Icons.post_add, 'My Post', onMyPostClick),
-              topCardButton(Icons.favorite, 'Loved Post', onLikedPostClick),
+              Expanded(
+                  child:
+                      topCardButton(Icons.post_add, 'My Post', onMyPostClick)),
+              Expanded(
+                  child: topCardButton(
+                      Icons.favorite, 'Loved Post', onLikedPostClick)),
               // topCardButton(Icons.refresh, 'Refresh', () {}),
             ],
           ),
@@ -172,38 +176,41 @@ class _CommunityScreenState extends State<CommunityScreen> {
   }
 
   Widget topCardButton(IconData icon, String text, Function() onPressed) {
-    return FilledButton.tonal(
-      onPressed: onPressed,
-      style: FilledButton.styleFrom(
-        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-        backgroundColor: Colors.grey[100],
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: FilledButton.tonal(
+        onPressed: onPressed,
+        style: FilledButton.styleFrom(
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+          backgroundColor: Colors.grey[100],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
         ),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(2),
-            decoration: BoxDecoration(
-              color: Colors.grey[200],
-              borderRadius: BorderRadius.circular(4),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(2),
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: Icon(
+                icon,
+                color: AppColors.darkGreen,
+              ),
             ),
-            child: Icon(
-              icon,
-              color: AppColors.darkGreen,
+            const SizedBox(width: 4),
+            Text(
+              text,
+              style: const TextStyle(
+                color: Colors.black87,
+                fontSize: 13,
+              ),
             ),
-          ),
-          const SizedBox(width: 4),
-          Text(
-            text,
-            style: const TextStyle(
-              color: Colors.black87,
-              fontSize: 13,
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
