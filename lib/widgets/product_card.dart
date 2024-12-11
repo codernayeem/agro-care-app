@@ -2,6 +2,7 @@ import 'package:agro_care_app/services/market_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
 import '../model/product_model.dart';
@@ -21,18 +22,23 @@ class MiniProductCard extends StatelessWidget {
     MarketService marketService = MarketService(userId: userId);
     var success = await marketService.addToCart(product.id, 1);
     if (success) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Added to cart'),
-          duration: const Duration(seconds: 1),
-        ),
-      );
+      Fluttertoast.showToast(
+          msg: "Added to cart",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: AppColors.primaryColor,
+          textColor: Colors.white,
+          fontSize: 16.0);
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Failed to add to cart'),
-          duration: const Duration(seconds: 1),
-        ),
+      Fluttertoast.showToast(
+        msg: 'Failed to add to cart',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Color.fromARGB(255, 175, 76, 76),
+        textColor: Colors.white,
+        fontSize: 16.0,
       );
     }
 

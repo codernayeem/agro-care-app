@@ -124,27 +124,6 @@ class _QuantityPriceRowState extends State<QuantityPriceRow> {
     _quantity = 1;
     quantityText.text = _quantity.toString();
     _submit();
-
-    SnackBar addedToCartSnackbar = SnackBar(
-      content: const Text(
-        "Added to Cart",
-        style: TextStyle(color: Colors.white),
-      ),
-      backgroundColor: AppColors.primaryColor,
-      duration: const Duration(seconds: 3),
-      action: SnackBarAction(
-        label: "View Cart",
-        onPressed: () {
-          // Navigator.push(context, MaterialPageRoute(builder: (context) {
-          //   return Cart(hasBottomnav: false);
-          // }));
-        },
-        textColor: AppColors.primaryColor,
-        disabledTextColor: Colors.grey,
-      ),
-    );
-
-    ScaffoldMessenger.of(context).showSnackBar(addedToCartSnackbar);
   }
 
   Widget buildTotalPriceRow() {

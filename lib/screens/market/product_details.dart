@@ -9,6 +9,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -90,19 +91,25 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     MarketService marketService = MarketService(userId: userId);
     try {
       if (await marketService.addToCart(product.id, quantity)) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Product added to cart'),
-            backgroundColor: AppColors.primaryColor,
-          ),
+        Fluttertoast.showToast(
+          msg: 'Product added to cart',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: AppColors.primaryColor,
+          textColor: Colors.white,
+          fontSize: 16.0,
         );
         context.read<CartProvider>().getCount();
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Failed to add to cart'),
-            backgroundColor: Color.fromARGB(255, 175, 76, 76),
-          ),
+        Fluttertoast.showToast(
+          msg: 'Failed to add to cart',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: const Color.fromARGB(255, 175, 76, 76),
+          textColor: Colors.white,
+          fontSize: 16.0,
         );
       }
     } catch (e) {
