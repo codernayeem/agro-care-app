@@ -6,7 +6,8 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
 class MyCarouselSlider extends StatefulWidget {
-  const MyCarouselSlider({Key? key}) : super(key: key);
+  final bool isMarket;
+  const MyCarouselSlider({Key? key, this.isMarket = false}) : super(key: key);
 
   @override
   State<MyCarouselSlider> createState() => _MyCarouselSliderState();
@@ -30,7 +31,8 @@ class _MyCarouselSliderState extends State<MyCarouselSlider> {
       isReady = false;
     });
 
-    var ref = FireStoreServices.db.collection('banners');
+    var ref = FireStoreServices.db
+        .collection(widget.isMarket ? 'banners2' : 'banners');
     var querySnapshot = await ref.get();
     carouselImageList = querySnapshot.docs
         .map((doc) => doc.data()['photoUrl'] as String)

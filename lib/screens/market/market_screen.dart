@@ -34,7 +34,7 @@ class MarketScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               const SizedBox(height: 10),
-              const MyCarouselSlider(),
+              const MyCarouselSlider(isMarket: true),
               const Padding(
                 padding: EdgeInsets.fromLTRB(18, 16, 18, 0),
                 child: Row(
