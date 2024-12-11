@@ -37,13 +37,31 @@ class _AddressModalState extends State<AddressModal> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              const SizedBox(height: 24),
               TextFormField(
+                maxLines: 3,
                 controller: _addressController,
-                minLines: 3,
-                maxLines: 4,
-                decoration: const InputDecoration(
-                  labelText: 'Enter Address',
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  label: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: AppColors.primaryColor,
+                    ),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: const Text(
+                      "Address",
+                      style: TextStyle(
+                          fontSize: 17,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500),
+                    ),
+                  ),
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                  border: const OutlineInputBorder(),
+                  icon: const Icon(
+                    Icons.map_outlined,
+                  ),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty || value.length < 3) {
@@ -52,13 +70,30 @@ class _AddressModalState extends State<AddressModal> {
                   return null;
                 },
               ),
-              const SizedBox(height: 14),
+              const SizedBox(height: 28),
               TextFormField(
                 controller: _phoneController,
-                keyboardType: TextInputType.phone,
-                decoration: const InputDecoration(
-                  labelText: 'Enter Phone Number',
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  label: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: AppColors.primaryColor,
+                    ),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: const Text(
+                      "Mobile Nnumber",
+                      style: TextStyle(
+                          fontSize: 17,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500),
+                    ),
+                  ),
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                  border: const OutlineInputBorder(),
+                  icon: const Icon(
+                    Icons.phone_android_rounded,
+                  ),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty || value.length < 10) {
@@ -66,17 +101,6 @@ class _AddressModalState extends State<AddressModal> {
                   }
                   return null;
                 },
-              ),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  Radio(
-                    value: true,
-                    groupValue: true,
-                    onChanged: (bool? value) {},
-                  ),
-                  const Text('COD Method'),
-                ],
               ),
               const SizedBox(height: 20),
               Row(
@@ -96,10 +120,21 @@ class _AddressModalState extends State<AddressModal> {
                           vertical: 8, horizontal: 16),
                       backgroundColor: AppColors.primaryColor,
                     ),
-                    child: const Text('Place Order',
+                    child: const Text('Place Order ➤',
                         style: TextStyle(fontSize: 16, color: Colors.white)),
                   ),
                 ],
+              ),
+              const SizedBox(height: 20),
+              Text(
+                'Note: You can pay cash on delivery. Please make sure you have the exact amount of money.',
+                textAlign: TextAlign.justify,
+                style: TextStyle(color: Colors.grey[600], fontSize: 14),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Or you can pay online after placing the order.',
+                style: TextStyle(color: Colors.grey[600], fontSize: 14),
               ),
             ],
           ),

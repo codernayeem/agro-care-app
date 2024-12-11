@@ -195,7 +195,7 @@ class _CartPageState extends State<CartPage> {
                     children: [
                       const SizedBox(height: 4),
                       Text(
-                        "${count} Items",
+                        "$count Items",
                         style: const TextStyle(fontSize: 12),
                       ),
                       Text(
@@ -209,7 +209,7 @@ class _CartPageState extends State<CartPage> {
                     ],
                   ),
                   const Spacer(),
-                  const Text("Place Orders ➤", style: TextStyle(fontSize: 13)),
+                  const Text("Place Order ➤", style: TextStyle(fontSize: 13)),
                 ],
               ),
               style: ButtonStyle(
