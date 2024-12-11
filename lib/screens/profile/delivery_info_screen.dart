@@ -1,17 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../theme/colors.dart';
 
-class AddressModal extends StatefulWidget {
-  const AddressModal({super.key});
+class DeliveryInfoScreen extends StatefulWidget {
+  const DeliveryInfoScreen({super.key});
 
   @override
-  _AddressModalState createState() => _AddressModalState();
+  State<DeliveryInfoScreen> createState() => _DeliveryInfoScreenState();
 }
 
-class _AddressModalState extends State<AddressModal> {
+class _DeliveryInfoScreenState extends State<DeliveryInfoScreen> {
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -47,12 +48,37 @@ class _AddressModalState extends State<AddressModal> {
     }
   }
 
+  Future<void> saveInfo() async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('saved_info')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .set({
+        'address': _addressController.text.trim(),
+        'phone': _phoneController.text.trim(),
+      }).then((value) {
+        // toast
+        Fluttertoast.showToast(
+          msg: 'Information saved successfully',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: AppColors.primaryColor,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text('One Step to Go!',
+        title: const Text('Your Delivery Informaton',
             style: TextStyle(color: Colors.black87, fontSize: 18)),
       ),
       body: Padding(
@@ -134,10 +160,7 @@ class _AddressModalState extends State<AddressModal> {
                   FilledButton.tonal(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        String address = _addressController.text.trim();
-                        String phone = _phoneController.text.trim();
-                        Navigator.of(context)
-                            .pop({'address': address, 'phone': phone});
+                        saveInfo();
                       }
                     },
                     style: FilledButton.styleFrom(
@@ -145,27 +168,12 @@ class _AddressModalState extends State<AddressModal> {
                           vertical: 8, horizontal: 16),
                       backgroundColor: AppColors.primaryColor,
                     ),
-                    child: const Text('Place Order ➤',
+                    child: const Text('Save Informaton',
                         style: TextStyle(fontSize: 16, color: Colors.white)),
                   ),
                 ],
               ),
               const SizedBox(height: 20),
-              Text(
-                '➤ No Delivery Charge. Delivery within 5-7 days.',
-                style: TextStyle(color: Colors.grey[700], fontSize: 14),
-              ),
-              const SizedBox(height: 14),
-              Text(
-                'Note: You can pay cash on delivery. Please make sure you have the exact amount of money.',
-                textAlign: TextAlign.justify,
-                style: TextStyle(color: Colors.grey[600], fontSize: 14),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Or you can pay online after placing the order.',
-                style: TextStyle(color: Colors.grey[600], fontSize: 14),
-              ),
             ],
           ),
         ),

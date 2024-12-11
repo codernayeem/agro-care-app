@@ -9,6 +9,7 @@ import '../../helpers/profile_image_provider.dart';
 import '../market/order_list_screen.dart';
 import 'auth_screen.dart';
 import 'change_password_screen.dart';
+import 'delivery_info_screen.dart';
 import 'edit_profile_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -145,6 +146,18 @@ class ProfileScreen extends StatelessWidget {
             _changePassword(context);
           },
           "assets/icons/edit.png",
+        ),
+        _listTile(
+          'Delivery Information',
+          'Manage your delivery address & phone number',
+          () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const DeliveryInfoScreen(),
+              ),
+            );
+          },
+          "assets/icons/location.png",
         ),
         _listTile(
           'Your Orders',
