@@ -79,3 +79,6 @@ A plant disease detection, shopping, and community app for farmers, gardeners, a
 | ![Image 25](README_images/25.jpg) | ![Image 26](README_images/26.jpg) | ![Image 27](README_images/27.jpg) |
 | ![Image 28](README_images/28.jpg) | ![Image 29](README_images/29.jpg) | ![Image 30](README_images/30.jpg) |
 | ![Image 31](README_images/31.jpg) | ![Image 32](README_images/32.jpg) | ![Image 33](README_images/33.jpg) |
+
+### Credits
+Various images, news information, marketplace details, and disease descriptions used in the app were sourced from the internet for educational purposes only.
